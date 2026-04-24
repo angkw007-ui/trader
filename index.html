@@ -545,7 +545,7 @@ async function saveRoundSettings(){
 /* ══════════════════════════════
    CONFIG & STATE
 ══════════════════════════════ */
-const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxjZACzjxLhBqi_OMyoJH2iu2082b5n-7aZCxWWYgsPKp9r0oHWJMjfDUzoGGZmesGYiw/exec';
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxhwJh8oDla9h2MqVdLGmvSLEMCgppy0XvhhI84VNLWXbrzM-Gjrwd0s0k7cn1ewxe87g/exec';
 
 // 회차 설정 — Google Sheets "설정" 시트에서 불러옴
 const DEFAULT_ROUNDS = [
@@ -923,8 +923,8 @@ function render(){
     <td colspan="3"></td></tr>`;
   tb.innerHTML=html;
 
-  const last=rows[rows.length-1];
-  const curPr=(last.pr||0)+(last.pnl||0);
+  // 현재 원금 = 이번 회차 시작 원금 + 누적 수익액
+  const curPr = init + cum;
   updateSummary(init, curPr, cum);
 }
 
