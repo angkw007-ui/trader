@@ -275,6 +275,7 @@ td:last-child{border-right:none;}
   <div class="hdr-r">
     <div class="saving" id="saving-ind"><div class="spin"></div>저장 중...</div>
     <div class="status"><div class="dot" id="conn-dot"></div><span id="conn-txt">연결 중...</span></div>
+    <button class="btn" onclick="openRoundSettings()" title="회차 설정">⚙️ 회차 설정</button>
     <button class="btn" onclick="loadData()">↻ 새로고침</button>
     <button class="btn btn-g" onclick="openAdd()">＋ 거래 추가</button>
   </div>
@@ -329,7 +330,130 @@ td:last-child{border-right:none;}
   </div>
 </div>
 
-<!-- FORMAT TOOLBAR -->
+<!-- ROUND SETTINGS MODAL -->
+<div class="overlay" id="round-settings-modal" onclick="if(event.target===this)closeRoundSettings()">
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-hdr">
+      <div class="modal-t">⚙️ 회차 설정</div>
+      <button class="modal-x" onclick="closeRoundSettings()">✕</button>
+    </div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:14px;">
+      회차별 이름과 시작 원금을 설정하세요. 변경 사항은 이 브라우저에 저장됩니다.
+    </div>
+    <div id="round-settings-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;"></div>
+    <button class="btn btn-g" onclick="addRoundConfig()" style="width:100%;justify-content:center;">
+      ＋ 회차 추가
+    </button>
+    <div class="mfooter">
+      <div style="font-size:11px;color:var(--text3);">변경 후 저장하면 즉시 반영됩니다</div>
+      <div class="mfooter-r">
+        <button class="btn" onclick="closeRoundSettings()">취소</button>
+        <button class="btn btn-g" onclick="saveRoundSettings()">저장</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════
+   ROUND SETTINGS
+══════════════════════════════ */
+const PALETTE=['#e67700','#1971c2','#2f9e44','#6741d9','#e03131',
+               '#0c8599','#c92a2a','#5f3dc4','#2b8a3e','#a61e4d'];
+
+let _tempRounds=[];  // 편집 중인 임시 배열
+
+function openRoundSettings(){
+  _tempRounds=roundConfig.map(r=>({...r}));
+  renderRoundSettingsList();
+  document.getElementById('round-settings-modal').classList.add('open');
+}
+function closeRoundSettings(){
+  document.getElementById('round-settings-modal').classList.remove('open');
+}
+
+function renderRoundSettingsList(){
+  const list=document.getElementById('round-settings-list');
+  list.innerHTML='';
+  _tempRounds.forEach((rc,i)=>{
+    const row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;';
+    row.innerHTML=`
+      <div style="width:22px;height:22px;border-radius:5px;background:${rc.color};flex-shrink:0;cursor:pointer;border:2px solid var(--border2);"
+        onclick="cycleColor(${i})" title="클릭하여 색상 변경"></div>
+      <input type="text" value="${rc.name}"
+        style="flex:1;min-width:0;background:var(--bg);border:1px solid var(--border2);border-radius:5px;
+               padding:5px 8px;font-size:12px;font-family:var(--sans);color:var(--text);outline:none;"
+        oninput="updateTempRound(${i},'name',this.value)" placeholder="회차명"/>
+      <input type="number" value="${rc.start}"
+        style="width:130px;background:var(--bg);border:1px solid var(--border2);border-radius:5px;
+               padding:5px 8px;font-size:12px;font-family:var(--mono);color:var(--text);outline:none;"
+        oninput="updateTempRound(${i},'start',Number(this.value))" placeholder="시작 원금"/>
+      <span style="font-size:10px;color:var(--text3);white-space:nowrap;">원</span>
+      ${_tempRounds.length>1?`<button onclick="removeRoundConfig(${i})"
+        style="background:none;border:none;cursor:pointer;font-size:14px;color:var(--text4);
+               padding:2px 4px;border-radius:4px;flex-shrink:0;"
+        onmouseover="this.style.color='#e03131'" onmouseout="this.style.color='var(--text4)'">✕</button>`:''}
+    `;
+    list.appendChild(row);
+  });
+}
+
+function updateTempRound(i,field,val){
+  if(!_tempRounds[i]) return;
+  _tempRounds[i][field]=val;
+}
+
+function cycleColor(i){
+  const cur=_tempRounds[i].color;
+  const idx=PALETTE.indexOf(cur);
+  _tempRounds[i].color=PALETTE[(idx+1)%PALETTE.length];
+  renderRoundSettingsList();
+}
+
+function addRoundConfig(){
+  const n=_tempRounds.length+1;
+  const lastStart=_tempRounds.length>0?_tempRounds[_tempRounds.length-1].start:1000000;
+  _tempRounds.push({
+    name: n+'회차',
+    start: lastStart*2,
+    color: PALETTE[(_tempRounds.length)%PALETTE.length]
+  });
+  renderRoundSettingsList();
+}
+
+function removeRoundConfig(i){
+  if(_tempRounds.length<=1){ alert('최소 1개의 회차가 필요합니다.'); return; }
+  if(!confirm(`"${_tempRounds[i].name}"을 삭제할까요? 이 회차의 거래 데이터는 유지됩니다.`)) return;
+  _tempRounds.splice(i,1);
+  renderRoundSettingsList();
+}
+
+async function saveRoundSettings(){
+  // 유효성 검사
+  for(let i=0;i<_tempRounds.length;i++){
+    if(!_tempRounds[i].name.trim()){ alert((i+1)+'번째 회차의 이름을 입력해주세요.'); return; }
+    if(!_tempRounds[i].start||_tempRounds[i].start<=0){ alert((i+1)+'번째 회차의 시작 원금을 올바르게 입력해주세요.'); return; }
+  }
+  const btn=document.querySelector('#round-settings-modal .btn-g:last-child');
+  btn.disabled=true; btn.textContent='저장 중...';
+  try{
+    // Google Sheets에 저장
+    await apiFetch('POST',{ action:'saveRounds', rounds:_tempRounds });
+    roundConfig=[..._tempRounds];
+    if(curRound>TOTAL_ROUNDS()) curRound=TOTAL_ROUNDS();
+    closeRoundSettings();
+    buildRoundTabs();
+    buildModalRoundSel();
+    updateRoundTabs();
+    render();
+  }catch(e){
+    alert('저장 실패: '+e.message);
+  }finally{
+    btn.disabled=false; btn.textContent='저장';
+  }
+}
+</script>
 <div class="ftb" id="ftb">
   <span class="ftb-lbl">색상</span>
   <div class="sw" style="background:#e03131" onclick="applyColor('#e03131')"></div>
@@ -435,15 +559,33 @@ td:last-child{border-right:none;}
 /* ══════════════════════════════
    CONFIG & STATE
 ══════════════════════════════ */
-const SCRIPT_URL='https://script.google.com/macros/s/AKfycbzS55U1ButsjTJCsdwi-7ga4jct_aDOTgZ0CSouns1_O30TMJnI6m1Su-8knZfPZ05L0w/exec';
-const TOTAL_ROUNDS=5;
-const ROUND_COLORS=['#e67700','#1971c2','#2f9e44','#6741d9','#e03131'];
-const ROUND_NAMES=['1회차','2회차','3회차','4회차','5회차'];
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxhwJh8oDla9h2MqVdLGmvSLEMCgppy0XvhhI84VNLWXbrzM-Gjrwd0s0k7cn1ewxe87g/exec';
 
-let allRows=[];       // all rows from Sheets
-let curRound=1;       // currently viewed round (1~5)
+// 회차 설정 — Google Sheets "설정" 시트에서 불러옴
+const DEFAULT_ROUNDS = [
+  { name:'1회차', start:1000000,  color:'#e67700' },
+  { name:'2회차', start:2000000,  color:'#1971c2' },
+  { name:'3회차', start:4000000,  color:'#2f9e44' },
+  { name:'4회차', start:8000000,  color:'#6741d9' },
+  { name:'5회차', start:16000000, color:'#e03131' },
+];
+
+// localStorage는 더 이상 사용하지 않음 — 모든 설정은 Sheets에서 관리
+function loadRoundConfig(){ return DEFAULT_ROUNDS; }
+function saveRoundConfig(){ /* Sheets에 저장 — saveRoundSettings()에서 처리 */ }
+
+let roundConfig = loadRoundConfig();
+
+// 동적 접근자
+function TOTAL_ROUNDS(){ return roundConfig.length; }
+function ROUND_NAMES(){ return roundConfig.map(r=>r.name); }
+function ROUND_COLORS(){ return roundConfig.map(r=>r.color); }
+function ROUND_START(){ return roundConfig.map(r=>r.start); }
+
+let allRows=[];
+let curRound=1;
 let _editId=null;
-let _modalRound=1;    // round selected in modal
+let _modalRound=1;
 
 /* ══════════════════════════════
    INIT
@@ -459,25 +601,35 @@ function todayStr(){ return new Date().toISOString().slice(0,10); }
 function buildRoundTabs(){
   const bar=document.getElementById('round-bar');
   bar.innerHTML='';
-  for(let r=1;r<=TOTAL_ROUNDS;r++){
+  const names=ROUND_NAMES();
+  for(let r=1;r<=TOTAL_ROUNDS();r++){
     const btn=document.createElement('button');
-    btn.className='rtab r'+r+(r===curRound?' active':'');
-    btn.innerHTML=`${ROUND_NAMES[r-1]} <span class="rbadge" id="tab-badge-${r}"></span>`;
-    btn.onclick=()=>switchRound(r);
+    btn.className='rtab r'+Math.min(r,9)+(r===curRound?' active':'');
+    btn.innerHTML=`${names[r-1]} <span class="rbadge" id="tab-badge-${r}"></span>`;
+    btn.onclick=(()=>{ const rr=r; return ()=>switchRound(rr); })();
     bar.appendChild(btn);
   }
+  // + 회차 추가 버튼
+  const addBtn=document.createElement('button');
+  addBtn.className='rtab';
+  addBtn.style.cssText='color:var(--green);font-size:18px;padding:6px 14px;';
+  addBtn.title='회차 추가';
+  addBtn.textContent='＋';
+  addBtn.onclick=openRoundSettings;
+  bar.appendChild(addBtn);
 }
 
 function buildModalRoundSel(){
   const sel=document.getElementById('modal-round-sel');
   sel.innerHTML='';
-  for(let r=1;r<=TOTAL_ROUNDS;r++){
+  const names=ROUND_NAMES();
+  const colors=ROUND_COLORS();
+  for(let r=1;r<=TOTAL_ROUNDS();r++){
     const btn=document.createElement('button');
     btn.className='rsel-btn'+(r===_modalRound?' active':'');
-    btn.textContent=ROUND_NAMES[r-1];
-    btn.style.setProperty('--rc',ROUND_COLORS[r-1]);
+    btn.textContent=names[r-1];
     btn.dataset.r=r;
-    btn.onclick=()=>selectModalRound(r);
+    btn.onclick=(()=>{ const rr=r; return ()=>selectModalRound(rr); })();
     sel.appendChild(btn);
   }
   styleModalRoundBtn();
@@ -494,10 +646,11 @@ function selectModalRound(r){
 }
 
 function styleModalRoundBtn(){
+  const colors=ROUND_COLORS();
   document.querySelectorAll('.rsel-btn').forEach((b,i)=>{
     if(i+1===_modalRound){
-      b.style.background=ROUND_COLORS[i];
-      b.style.borderColor=ROUND_COLORS[i];
+      b.style.background=colors[i];
+      b.style.borderColor=colors[i];
       b.style.color='#fff';
     } else {
       b.style.background='';b.style.borderColor='';b.style.color='';
@@ -536,9 +689,14 @@ async function loadData(){
   try{
     const d=await apiFetch('GET');
     allRows=d.data||[];
-    // ensure round field exists; default to 1 for old rows
     allRows.forEach(r=>{ if(!r.round) r.round=1; else r.round=Number(r.round); });
+    // 회차 설정도 Sheets에서 불러옴
+    if(d.rounds && d.rounds.length>0){
+      roundConfig=d.rounds;
+    }
     setConn('ok','연결됨 · Google Sheets');
+    buildRoundTabs();
+    buildModalRoundSel();
     updateRoundTabs();
     render();
   }catch(e){ setConn('err','연결 실패: '+e.message); renderEmpty('연결 실패. [↻ 새로고침]을 눌러주세요.'); }
@@ -555,24 +713,15 @@ function rowsOf(r){ return allRows.filter(x=>x.round===r); }
 
 // compute start principal of round r:
 // round 1 = first row's pr, round n = last row of round n-1: pr+pnl
-// ★ 초기 원금 고정값 (1회차 시작 기준)
-const INITIAL_PRINCIPAL = 1000000;
-
+// ★ 각 회차 시작 원금 — roundConfig에서 동적으로 읽음
 function roundStartPr(r){
-  if(r===1) return INITIAL_PRINCIPAL;
-  // r회차 시작 = r-1회차 마지막 행의 pr+pnl
-  const prev=rowsOf(r-1);
-  if(prev.length===0){
-    // r-1회차 데이터 없으면 재귀적으로 계산
-    return roundStartPr(r-1)*2;
-  }
-  const last=prev[prev.length-1];
-  return (last.pr||0)+(last.pnl||0);
+  const starts=ROUND_START();
+  return starts[r-1] || 1000000;
 }
 
 // Determine which round is currently "active" (first incomplete)
 function activeRound(){
-  for(let r=1;r<=TOTAL_ROUNDS;r++){
+  for(let r=1;r<=TOTAL_ROUNDS();r++){
     const rows=rowsOf(r);
     if(rows.length===0) return r;
     const startPr=roundStartPr(r);
@@ -580,15 +729,15 @@ function activeRound(){
     const cur=(last.pr||0)+(last.pnl||0);
     if(cur<startPr*2) return r;
   }
-  return TOTAL_ROUNDS;
+  return TOTAL_ROUNDS();
 }
 
 function updateRoundTabs(){
-  for(let r=1;r<=TOTAL_ROUNDS;r++){
+  for(let r=1;r<=TOTAL_ROUNDS();r++){
     const rows=rowsOf(r);
     const badge=document.getElementById('tab-badge-'+r);
     if(!badge) continue;
-    if(rows.length===0){ badge.textContent=''; return; }
+    if(rows.length===0){ badge.textContent=''; continue; }
     const startPr=roundStartPr(r);
     const last=rows[rows.length-1];
     const cur=(last.pr||0)+(last.pnl||0);
@@ -625,27 +774,18 @@ function autoFillPrincipal(){
   const hint=document.getElementById('pr-hint');
   const rows=rowsOf(_modalRound);
   if(rows.length>0){
+    // 해당 회차에 기존 데이터가 있으면 마지막 행 기준 자동합산
     const last=rows[rows.length-1];
     const autoPr=(last.pr||0)+(last.pnl||0);
     document.getElementById('f-pr').value=autoPr;
     hint.textContent=`↑ 전일 원금 ${fmt(last.pr||0)} + 수익 ${fmt(last.pnl||0)} = ${fmt(autoPr)}원`;
     hint.style.display='block';
-  } else if(_modalRound>1){
-    // first entry of this round: start from end of previous round
-    const prev=rowsOf(_modalRound-1);
-    if(prev.length>0){
-      const last=prev[prev.length-1];
-      const autoPr=(last.pr||0)+(last.pnl||0);
-      document.getElementById('f-pr').value=autoPr;
-      hint.textContent=`↑ ${ROUND_NAMES[_modalRound-2]} 완료금 ${fmt(autoPr)}원 자동입력`;
-      hint.style.display='block';
-    } else {
-      document.getElementById('f-pr').value='';
-      hint.style.display='none';
-    }
   } else {
-    document.getElementById('f-pr').value='';
-    hint.style.display='none';
+    // 해당 회차 첫 입력: 고정 시작 원금 자동입력
+    const startPr=ROUND_START[_modalRound-1];
+    document.getElementById('f-pr').value=startPr;
+    hint.textContent=`↑ ${ROUND_NAMES()[_modalRound-1]} 시작 원금 ${fmt(startPr)}원 자동입력`;
+    hint.style.display='block';
   }
   calcLive();
 }
@@ -750,7 +890,7 @@ function toHtml(s){ return esc(s||'').replace(/\n/g,'<br>'); }
 function renderEmpty(msg){
   document.getElementById('row-count').textContent='0';
   document.getElementById('tbody').innerHTML=
-    `<tr><td colspan="7" class="empty-row">${msg||`${ROUND_NAMES[curRound-1]} 데이터가 없습니다.<br><small>[＋ 거래 추가] 버튼으로 첫 기록을 입력해보세요.</small>`}</td></tr>`;
+    `<tr><td colspan="7" class="empty-row">${msg||`${ROUND_NAMES()[curRound-1]} 데이터가 없습니다.<br><small>[＋ 거래 추가] 버튼으로 첫 기록을 입력해보세요.</small>`}</td></tr>`;
 }
 
 function render(){
@@ -758,7 +898,7 @@ function render(){
   const rows=rowsOf(curRound).slice().sort((a,b)=>a.date.localeCompare(b.date));
   const tb=document.getElementById('tbody');
   document.getElementById('row-count').textContent=rows.length;
-  document.getElementById('round-label-small').textContent=ROUND_NAMES[curRound-1]+' · ';
+  document.getElementById('round-label-small').textContent=ROUND_NAMES()[curRound-1]+' · ';
 
   if(!rows.length){ renderEmpty(); updateSummary(0,0,0); return; }
 
@@ -827,17 +967,18 @@ function updateSummary(init,cur,cum){
   const target=startPr*2;
   document.getElementById('s-tgt').textContent=fmt(target)+'원';
 
-  // 5회 최종 목표: 항상 INITIAL_PRINCIPAL × 2^5
-  document.getElementById('s-final').textContent=fmt(INITIAL_PRINCIPAL*Math.pow(2,TOTAL_ROUNDS))+'원';
+  // 5회 최종 목표: 마지막 회차 시작 원금 × 2
+  const lastStart=ROUND_START();
+  document.getElementById('s-final').textContent=fmt(lastStart[lastStart.length-1]*2)+'원';
 
   const prog=cur>startPr?Math.min((cur-startPr)/startPr*100,100):0;
   document.getElementById('pbar').style.width=Math.max(prog,0)+'%';
   document.getElementById('ppct').textContent=Math.max(prog,0).toFixed(1)+'%';
 
   const done=cur>=target&&target>0;
-  document.getElementById('prog-lbl').textContent=ROUND_NAMES[curRound-1]+' 달성률';
+  document.getElementById('prog-lbl').textContent=ROUND_NAMES()[curRound-1]+' 달성률';
   document.getElementById('ptxt').textContent=
-    done?`🎉 ${ROUND_NAMES[curRound-1]} 목표 달성!`:
+    done?`🎉 ${ROUND_NAMES()[curRound-1]} 목표 달성!`:
     (cur?`목표까지 ${fmt(Math.max(target-cur,0))}원 남음`:'');
 }
 
