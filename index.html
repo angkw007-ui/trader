@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>매매일지 — 원금의 2배 만들기</title>
+<title>원금의 2배 만들기 × 5회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -14,6 +14,7 @@
   --red:#e03131;--red-bg:#fff5f5;
   --blue:#1971c2;--blue-bg:#e7f5ff;
   --amber:#e67700;--amber-bg:#fff9db;
+  --purple:#6741d9;--purple-bg:#f3f0ff;
   --prev-bg:#f0f4ff;--prev-border:#c5d3f0;--prev-text:#1971c2;
   --today-bg:#f0fff4;--today-border:#b2dfcc;--today-text:#2f9e44;
   --mono:'IBM Plex Mono',monospace;
@@ -21,6 +22,13 @@
   --sh:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.05);
   --sh-lg:0 8px 24px rgba(0,0,0,.12),0 2px 8px rgba(0,0,0,.06);
 }
+/* round accent colors */
+.r1{--rc:#e67700;--rcb:#fff9db;--rcl:rgba(230,119,0,.2);}
+.r2{--rc:#1971c2;--rcb:#e7f5ff;--rcl:rgba(25,113,194,.2);}
+.r3{--rc:#2f9e44;--rcb:#ebfbee;--rcl:rgba(47,158,68,.2);}
+.r4{--rc:#6741d9;--rcb:#f3f0ff;--rcl:rgba(103,65,217,.2);}
+.r5{--rc:#e03131;--rcb:#fff5f5;--rcl:rgba(224,49,49,.2);}
+
 *{box-sizing:border-box;margin:0;padding:0;}
 html{font-size:14px;}
 body{font-family:var(--sans);background:#f1f3f5;color:var(--text);min-height:100vh;}
@@ -45,23 +53,59 @@ body{font-family:var(--sans);background:#f1f3f5;color:var(--text);min-height:100
 .btn-r{background:var(--red);border-color:var(--red);color:#fff;}
 .btn-r:hover:not(:disabled){background:#c92a2a;}
 
+/* ── ROUND TABS ── */
+.round-bar{background:#fff;border-bottom:1px solid var(--border);
+  padding:0 20px;display:flex;gap:0;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.round-bar::-webkit-scrollbar{height:0;}
+.rtab{padding:10px 18px;font-size:12px;font-weight:500;cursor:pointer;
+  border-bottom:3px solid transparent;color:var(--text3);white-space:nowrap;
+  transition:all .15s;position:relative;background:none;border-top:none;border-left:none;border-right:none;}
+.rtab:hover{color:var(--text2);}
+.rtab.active{color:var(--text);border-bottom-color:var(--green);}
+.rtab .rbadge{display:inline-block;font-size:9px;padding:1px 5px;border-radius:3px;
+  margin-left:5px;font-weight:700;vertical-align:middle;}
+.rtab.done .rbadge{background:#ebfbee;color:#2f9e44;}
+.rtab.active-r .rbadge{background:var(--rcb);color:var(--rc);}
+
+/* ── TOTAL OVERVIEW ── */
+.overview{background:#fff;border-bottom:1px solid var(--border);padding:10px 20px;}
+.ov-title{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;}
+.ov-rounds{display:flex;gap:8px;flex-wrap:wrap;}
+.ov-round{flex:1;min-width:120px;background:var(--bg2);border:1px solid var(--border);
+  border-radius:8px;padding:9px 12px;position:relative;overflow:hidden;}
+.ov-round.current{border-color:var(--green);box-shadow:0 0 0 2px rgba(47,158,68,.12);}
+.ov-round.done{border-color:var(--green-dark);background:var(--green-bg,#ebfbee);}
+.ov-r-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;
+  color:var(--text3);margin-bottom:4px;}
+.ov-r-label.done{color:var(--green-dark);}
+.ov-r-range{font-size:11px;font-family:var(--mono);color:var(--text2);margin-bottom:3px;}
+.ov-r-pct{font-size:13px;font-weight:700;font-family:var(--mono);}
+.ov-bar{position:absolute;bottom:0;left:0;height:3px;background:var(--green);
+  border-radius:0 2px 2px 0;transition:width .5s ease;}
+.ov-check{position:absolute;top:8px;right:8px;font-size:14px;}
+
 /* ── SUMMARY ── */
 .sum-bar{background:#fff;border-bottom:1px solid var(--border);
   display:flex;overflow-x:auto;padding:0 20px;-webkit-overflow-scrolling:touch;}
 .sum-bar::-webkit-scrollbar{height:0;}
-.si{padding:9px 18px 9px 0;margin-right:18px;border-right:1px solid var(--border);white-space:nowrap;min-width:120px;}
+.si{padding:9px 18px 9px 0;margin-right:18px;border-right:1px solid var(--border);
+  white-space:nowrap;min-width:110px;}
 .si:last-child{border-right:none;}
 .si-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px;}
 .si-val{font-size:15px;font-weight:700;font-family:var(--mono);}
 .pos{color:var(--red);}.neg{color:var(--blue);}.neu{color:var(--text);}
+.gld{color:#d4a017;}
 
 /* ── PROGRESS ── */
-.prog{background:#fff;border-bottom:1px solid var(--border);padding:8px 20px;display:flex;align-items:center;gap:12px;}
+.prog{background:#fff;border-bottom:1px solid var(--border);
+  padding:8px 20px;display:flex;align-items:center;gap:12px;}
 .prog-lbl{font-size:10px;color:var(--text3);white-space:nowrap;}
 .prog-track{flex:1;height:5px;background:var(--bg3);border-radius:99px;overflow:hidden;max-width:360px;}
 .prog-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--green),#74c69d);transition:width .5s ease;}
 .prog-pct{font-size:11px;font-weight:700;font-family:var(--mono);color:var(--green);white-space:nowrap;}
 .prog-sub{font-size:10px;color:var(--text4);}
+.prog-complete{font-size:11px;font-weight:700;color:var(--green);
+  background:#ebfbee;border:1px solid #b2dfcc;border-radius:5px;padding:2px 8px;}
 
 /* ── STATUS / SAVING ── */
 .status{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3);}
@@ -144,8 +188,7 @@ td:last-child{border-right:none;}
   padding:20px 16px;overflow-y:auto;}
 .overlay.open{display:flex;}
 .modal{background:#fff;border:1px solid var(--border);border-radius:14px;
-  padding:22px;width:100%;max-width:720px;box-shadow:var(--sh-lg);
-  margin:auto;}
+  padding:22px;width:100%;max-width:720px;box-shadow:var(--sh-lg);margin:auto;}
 .modal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
 .modal-t{font-size:15px;font-weight:700;}
 .modal-x{font-size:18px;color:var(--text3);cursor:pointer;background:none;border:none;
@@ -165,21 +208,15 @@ td:last-child{border-right:none;}
 .lci .lcl{color:var(--text3);font-size:9px;text-transform:uppercase;}
 .lci .lcv{font-size:13px;font-weight:600;margin-top:1px;}
 
-/* ── CONTENTEDITABLE EDITOR FIELDS ── */
-/* shared editor style */
-.ce-field{
-  background:var(--bg2);border:1px solid var(--border2);border-radius:6px;
+/* contenteditable fields */
+.ce-field{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;
   color:var(--text);font-family:var(--sans);font-size:13px;
   padding:8px 10px;outline:none;min-height:90px;line-height:1.75;
   transition:border-color .15s,box-shadow .15s;
   white-space:pre-wrap;word-break:break-word;
-  -webkit-user-modify:read-write-plaintext-only;
-  user-select:text;-webkit-user-select:text;
-  overflow-y:auto;
-}
+  user-select:text;-webkit-user-select:text;overflow-y:auto;}
 .ce-field:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(25,113,194,.1);background:#fff;}
 .ce-field:empty::before{content:attr(data-placeholder);color:var(--text4);pointer-events:none;}
-/* prev / today section editors */
 .strat-inputs{border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-top:4px;}
 .strat-input-sec{padding:10px 12px;}
 .strat-input-sec:first-child{background:var(--prev-bg);border-bottom:1px solid var(--prev-border);}
@@ -191,13 +228,18 @@ td:last-child{border-right:none;}
 .ce-prev:focus{border-color:#1971c2;box-shadow:0 0 0 3px rgba(25,113,194,.1);background:#fff;}
 .ce-today{background:rgba(255,255,255,.7);border:1px solid var(--today-border);}
 .ce-today:focus{border-color:#2f9e44;box-shadow:0 0 0 3px rgba(47,158,68,.1);background:#fff;}
-
 .fg-label-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
 .fg-label-row label{font-size:9.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;}
 .fg-label-hint{font-size:9px;color:var(--amber);background:var(--amber-bg);
   padding:1px 6px;border-radius:3px;border:1px solid rgba(230,119,0,.2);}
 
-/* delete confirm */
+/* round selector in modal */
+.round-sel{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px;}
+.rsel-btn{padding:5px 12px;border-radius:6px;border:1px solid var(--border2);
+  background:var(--bg2);font-size:12px;font-weight:500;cursor:pointer;
+  transition:all .15s;color:var(--text2);}
+.rsel-btn.active{color:#fff;}
+
 .del-confirm{background:var(--red-bg);border:1px solid rgba(224,49,49,.25);
   border-radius:8px;padding:12px 14px;margin-top:12px;display:none;}
 .del-confirm.show{display:block;}
@@ -210,10 +252,12 @@ td:last-child{border-right:none;}
 .mfooter-r{display:flex;gap:8px;}
 
 @media(max-width:640px){
-  .hdr,.sum-bar,.prog,.main{padding-left:14px;padding-right:14px;}
+  .hdr,.sum-bar,.prog,.main,.round-bar,.overview{padding-left:14px;padding-right:14px;}
   .fgrid{grid-template-columns:1fr;}
   .modal{padding:16px;border-radius:10px;}
   table{min-width:820px;}
+  .ov-rounds{gap:6px;}
+  .ov-round{min-width:100px;}
 }
 </style>
 </head>
@@ -224,7 +268,7 @@ td:last-child{border-right:none;}
   <div class="hdr-l">
     <div class="logo">📈</div>
     <div>
-      <div class="hdr-title">원금의 2배 만들기</div>
+      <div class="hdr-title">원금의 2배 만들기 × 5회</div>
       <div class="hdr-sub">매매 일지 · Google Sheets 연동</div>
     </div>
   </div>
@@ -236,19 +280,29 @@ td:last-child{border-right:none;}
   </div>
 </div>
 
-<!-- SUMMARY -->
+<!-- ROUND TABS -->
+<div class="round-bar" id="round-bar"></div>
+
+<!-- OVERVIEW (5 rounds at a glance) -->
+<div class="overview">
+  <div class="ov-title">전체 진행률</div>
+  <div class="ov-rounds" id="ov-rounds"></div>
+</div>
+
+<!-- SUMMARY for current round -->
 <div class="sum-bar">
-  <div class="si"><div class="si-lbl">초기 원금</div><div class="si-val neu" id="s-init">—</div></div>
+  <div class="si"><div class="si-lbl">시작 원금</div><div class="si-val neu" id="s-init">—</div></div>
   <div class="si"><div class="si-lbl">현재 원금</div><div class="si-val neu" id="s-cur">—</div></div>
-  <div class="si"><div class="si-lbl">누적 수익</div><div class="si-val" id="s-pnl">—</div></div>
-  <div class="si"><div class="si-lbl">누적 수익률</div><div class="si-val" id="s-rate">—</div></div>
+  <div class="si"><div class="si-lbl">이번 회 수익</div><div class="si-val" id="s-pnl">—</div></div>
+  <div class="si"><div class="si-lbl">이번 회 수익률</div><div class="si-val" id="s-rate">—</div></div>
   <div class="si"><div class="si-lbl">거래일 수</div><div class="si-val neu" id="s-days">0일</div></div>
-  <div class="si"><div class="si-lbl">목표(×2)</div><div class="si-val pos" id="s-tgt">—</div></div>
+  <div class="si"><div class="si-lbl">이번 목표(×2)</div><div class="si-val pos" id="s-tgt">—</div></div>
+  <div class="si"><div class="si-lbl">5회 최종 목표</div><div class="si-val gld" id="s-final">—</div></div>
 </div>
 
 <!-- PROGRESS -->
 <div class="prog">
-  <div class="prog-lbl">목표 달성률</div>
+  <div class="prog-lbl" id="prog-lbl">이번 회 달성률</div>
   <div class="prog-track"><div class="prog-fill" id="pbar" style="width:0%"></div></div>
   <div class="prog-pct" id="ppct">0%</div>
   <div class="prog-sub" id="ptxt"></div>
@@ -258,8 +312,9 @@ td:last-child{border-right:none;}
 <div class="main">
   <div class="toolbar">
     <div class="tb-l">
+      <span id="round-label-small" style="font-weight:600;color:var(--text)"></span>
       총 <strong id="row-count">0</strong>건
-      <span class="tb-hint">✦ 전략·결과란 텍스트 드래그 → 색상·굵기 변경</span>
+      <span class="tb-hint">✦ 전략·결과란 드래그 → 색상·굵기 변경</span>
     </div>
   </div>
   <div class="tcard">
@@ -304,11 +359,17 @@ td:last-child{border-right:none;}
       <div class="modal-t" id="modal-title">📝 거래 기록 추가</div>
       <button class="modal-x" onclick="closeModal()">✕</button>
     </div>
+
+    <!-- Round selector -->
+    <div style="margin-bottom:12px;">
+      <div style="font-size:9.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;">회차 선택</div>
+      <div class="round-sel" id="modal-round-sel"></div>
+    </div>
+
     <div id="edit-badge-wrap" style="display:none;margin-bottom:12px;">
       <span class="edit-badge">✏️ 수정 모드 · 변경할 항목만 수정 후 저장</span>
     </div>
 
-    <!-- 숫자 입력 -->
     <div class="fgrid">
       <div class="fg"><label>날짜 *</label><input type="date" id="f-date"/></div>
       <div class="fg">
@@ -329,7 +390,6 @@ td:last-child{border-right:none;}
       <div class="lci"><div class="lcl">수익률</div><div class="lcv neu" id="lc-r">—</div></div>
     </div>
 
-    <!-- 매매전략 (contenteditable) -->
     <div style="margin-top:8px;">
       <div class="fg-label-row">
         <label>매매 전략</label>
@@ -339,28 +399,26 @@ td:last-child{border-right:none;}
         <div class="strat-input-sec">
           <span class="strat-input-lbl lbl-prev">📅 전일 추천</span>
           <div id="f-prev" class="ce-field ce-prev" contenteditable="true"
-            data-placeholder="전일 추천 종목 및 전략&#10;예) 삼성중공업: 공통추천1위(K,B,H2)&#10;    대원전선(B상,S)"></div>
+            data-placeholder="전일 추천 종목 및 전략&#10;예) 삼성중공업: 공통추천1위(K,B,H2)"></div>
         </div>
         <div class="strat-input-sec">
           <span class="strat-input-lbl lbl-today">🟢 오늘 추천</span>
           <div id="f-today" class="ce-field ce-today" contenteditable="true"
-            data-placeholder="오늘 추천 종목 및 전략&#10;예) 삼성중공업: 넥장 4%상승후 급락 대응&#10;    대원전선(B상,S): 최고가 갱신 재반등"></div>
+            data-placeholder="오늘 추천 종목 및 전략&#10;예) 삼성중공업: 넥장 4%상승후 급락 대응"></div>
         </div>
       </div>
     </div>
 
-    <!-- 결과/반성 (contenteditable) -->
     <div style="margin-top:10px;">
       <div class="fg-label-row">
         <label>결과 / 반성 / 교훈</label>
         <span class="fg-label-hint">✦ 드래그 → 색상·굵기 변경</span>
       </div>
       <div id="f-m2" class="ce-field" contenteditable="true"
-        data-placeholder="예) 지수 하락&#10;장초반 삼성중공업 급락시 손절(-8.5%)&#10;욕심을 버리면 100억이다."
+        data-placeholder="예) 지수 하락&#10;장초반 급락시 손절(-8.5%)&#10;욕심을 버리면 100억이다."
         style="min-height:110px;"></div>
     </div>
 
-    <!-- 삭제 확인 -->
     <div class="del-confirm" id="del-confirm">
       <p>⚠️ 이 기록을 삭제하면 Google Sheets에서도 영구 삭제됩니다. 계속할까요?</p>
       <div style="display:flex;gap:8px;">
@@ -381,19 +439,83 @@ td:last-child{border-right:none;}
 
 <script>
 /* ══════════════════════════════
-   CONFIG
+   CONFIG & STATE
 ══════════════════════════════ */
-const SCRIPT_URL='https://script.google.com/macros/s/AKfycbwLeorbbHkE0miCm1q_T9biDImmUJEeQCrJlvPcCswGuDasQsmPyaX9VrERDWudOvIEbw/exec';
-let rows=[];
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxhwJh8oDla9h2MqVdLGmvSLEMCgppy0XvhhI84VNLWXbrzM-Gjrwd0s0k7cn1ewxe87g/exec';
+const TOTAL_ROUNDS=5;
+const ROUND_COLORS=['#e67700','#1971c2','#2f9e44','#6741d9','#e03131'];
+const ROUND_NAMES=['1회차','2회차','3회차','4회차','5회차'];
+
+let allRows=[];       // all rows from Sheets
+let curRound=1;       // currently viewed round (1~5)
 let _editId=null;
+let _modalRound=1;    // round selected in modal
 
 /* ══════════════════════════════
    INIT
 ══════════════════════════════ */
-document.getElementById('f-date').value = todayStr();
+document.getElementById('f-date').value=todayStr();
+buildRoundTabs();
+buildModalRoundSel();
 loadData();
 
 function todayStr(){ return new Date().toISOString().slice(0,10); }
+
+/* build round tabs */
+function buildRoundTabs(){
+  const bar=document.getElementById('round-bar');
+  bar.innerHTML='';
+  for(let r=1;r<=TOTAL_ROUNDS;r++){
+    const btn=document.createElement('button');
+    btn.className='rtab r'+r+(r===curRound?' active':'');
+    btn.innerHTML=`${ROUND_NAMES[r-1]} <span class="rbadge" id="tab-badge-${r}"></span>`;
+    btn.onclick=()=>switchRound(r);
+    bar.appendChild(btn);
+  }
+}
+
+function buildModalRoundSel(){
+  const sel=document.getElementById('modal-round-sel');
+  sel.innerHTML='';
+  for(let r=1;r<=TOTAL_ROUNDS;r++){
+    const btn=document.createElement('button');
+    btn.className='rsel-btn'+(r===_modalRound?' active':'');
+    btn.textContent=ROUND_NAMES[r-1];
+    btn.style.setProperty('--rc',ROUND_COLORS[r-1]);
+    btn.dataset.r=r;
+    btn.onclick=()=>selectModalRound(r);
+    sel.appendChild(btn);
+  }
+  styleModalRoundBtn();
+}
+
+function selectModalRound(r){
+  _modalRound=r;
+  document.querySelectorAll('.rsel-btn').forEach((b,i)=>{
+    b.classList.toggle('active',i+1===r);
+  });
+  styleModalRoundBtn();
+  // auto-fill principal from last row of this round
+  if(!_editId) autoFillPrincipal();
+}
+
+function styleModalRoundBtn(){
+  document.querySelectorAll('.rsel-btn').forEach((b,i)=>{
+    if(i+1===_modalRound){
+      b.style.background=ROUND_COLORS[i];
+      b.style.borderColor=ROUND_COLORS[i];
+      b.style.color='#fff';
+    } else {
+      b.style.background='';b.style.borderColor='';b.style.color='';
+    }
+  });
+}
+
+function switchRound(r){
+  curRound=r;
+  buildRoundTabs();
+  render();
+}
 
 /* ══════════════════════════════
    API
@@ -414,18 +536,70 @@ async function apiFetch(method,body){
   if(!d.ok) throw new Error(d.error||'서버 오류');
   return d;
 }
+
 async function loadData(){
   setConn('loading','연결 중...');
   try{
     const d=await apiFetch('GET');
-    rows=d.data||[];
+    allRows=d.data||[];
+    // ensure round field exists; default to 1 for old rows
+    allRows.forEach(r=>{ if(!r.round) r.round=1; else r.round=Number(r.round); });
     setConn('ok','연결됨 · Google Sheets');
+    updateRoundTabs();
     render();
   }catch(e){ setConn('err','연결 실패: '+e.message); renderEmpty('연결 실패. [↻ 새로고침]을 눌러주세요.'); }
 }
+
 async function apiAdd(row){ setSaving(true); try{ await apiFetch('POST',{action:'add',row}); await loadData(); }finally{ setSaving(false); } }
 async function apiUpdate(row){ setSaving(true); try{ await apiFetch('POST',{action:'update',row}); await loadData(); }finally{ setSaving(false); } }
 async function apiDelete(id){ setSaving(true); try{ await apiFetch('POST',{action:'delete',id}); await loadData(); }finally{ setSaving(false); } }
+
+/* ══════════════════════════════
+   ROUND HELPERS
+══════════════════════════════ */
+function rowsOf(r){ return allRows.filter(x=>x.round===r); }
+
+// compute start principal of round r:
+// round 1 = first row's pr, round n = last row of round n-1: pr+pnl
+function roundStartPr(r){
+  if(r===1){
+    const rows=rowsOf(1);
+    return rows.length>0?rows[0].pr:0;
+  }
+  const prev=rowsOf(r-1);
+  if(prev.length===0) return roundStartPr(r-1)*2||0; // fallback
+  const last=prev[prev.length-1];
+  return (last.pr||0)+(last.pnl||0);
+}
+
+// Determine which round is currently "active" (first incomplete)
+function activeRound(){
+  for(let r=1;r<=TOTAL_ROUNDS;r++){
+    const rows=rowsOf(r);
+    if(rows.length===0) return r;
+    const startPr=roundStartPr(r);
+    const last=rows[rows.length-1];
+    const cur=(last.pr||0)+(last.pnl||0);
+    if(cur<startPr*2) return r;
+  }
+  return TOTAL_ROUNDS;
+}
+
+function updateRoundTabs(){
+  for(let r=1;r<=TOTAL_ROUNDS;r++){
+    const rows=rowsOf(r);
+    const badge=document.getElementById('tab-badge-'+r);
+    if(!badge) continue;
+    if(rows.length===0){ badge.textContent=''; return; }
+    const startPr=roundStartPr(r);
+    const last=rows[rows.length-1];
+    const cur=(last.pr||0)+(last.pnl||0);
+    const done=cur>=startPr*2;
+    badge.textContent=done?'완료':'진행 중';
+    const tab=badge.closest('.rtab');
+    tab.classList.toggle('done',done);
+  }
+}
 
 /* ══════════════════════════════
    LIVE CALC
@@ -442,82 +616,79 @@ function calcLive(){
 function sv(id,txt,cls){ const e=document.getElementById(id); e.textContent=txt; e.className='lcv '+cls; }
 
 /* ══════════════════════════════
-   CONTENTEDITABLE HELPERS
-══════════════════════════════ */
-// Get plain text from CE field (strip HTML for storage in plain-text columns)
-function getCEText(id){ return document.getElementById(id).innerText||''; }
-// Get HTML from CE field (for rich-text HTML columns)
-function getCEHtml(id){ return document.getElementById(id).innerHTML||''; }
-// Set CE field content
-function setCE(id, html){
-  const el=document.getElementById(id);
-  if(!html||html===''||html==='<br>'){
-    el.innerHTML='';
-  } else {
-    el.innerHTML=html;
-  }
-}
-function clearCE(id){ document.getElementById(id).innerHTML=''; }
-
-/* ══════════════════════════════
    MODAL
 ══════════════════════════════ */
+function getCEText(id){ return document.getElementById(id).innerText||''; }
+function getCEHtml(id){ return document.getElementById(id).innerHTML||''; }
+function setCE(id,html){ const el=document.getElementById(id); el.innerHTML=(html&&html!=='<br>')?html:''; }
+function clearCE(id){ document.getElementById(id).innerHTML=''; }
+
+function autoFillPrincipal(){
+  const hint=document.getElementById('pr-hint');
+  const rows=rowsOf(_modalRound);
+  if(rows.length>0){
+    const last=rows[rows.length-1];
+    const autoPr=(last.pr||0)+(last.pnl||0);
+    document.getElementById('f-pr').value=autoPr;
+    hint.textContent=`↑ 전일 원금 ${fmt(last.pr||0)} + 수익 ${fmt(last.pnl||0)} = ${fmt(autoPr)}원`;
+    hint.style.display='block';
+  } else if(_modalRound>1){
+    // first entry of this round: start from end of previous round
+    const prev=rowsOf(_modalRound-1);
+    if(prev.length>0){
+      const last=prev[prev.length-1];
+      const autoPr=(last.pr||0)+(last.pnl||0);
+      document.getElementById('f-pr').value=autoPr;
+      hint.textContent=`↑ ${ROUND_NAMES[_modalRound-2]} 완료금 ${fmt(autoPr)}원 자동입력`;
+      hint.style.display='block';
+    } else {
+      document.getElementById('f-pr').value='';
+      hint.style.display='none';
+    }
+  } else {
+    document.getElementById('f-pr').value='';
+    hint.style.display='none';
+  }
+  calcLive();
+}
+
 function openAdd(){
   _editId=null;
+  _modalRound=activeRound();
+  buildModalRoundSel();
   document.getElementById('modal-title').textContent='📝 거래 기록 추가';
   document.getElementById('save-btn').textContent='저장';
   document.getElementById('edit-badge-wrap').style.display='none';
   document.getElementById('del-btn').style.display='none';
   document.getElementById('del-confirm').classList.remove('show');
-
-  // 날짜, 수익액 초기화
   document.getElementById('f-date').value=todayStr();
   document.getElementById('f-pnl').value='';
   document.getElementById('f-rt').value='';
   clearCE('f-prev'); clearCE('f-today'); clearCE('f-m2');
-
-  // ★ 원금 = 바로 위 행의 원금 + 수익액 자동합산
-  const hint=document.getElementById('pr-hint');
-  if(rows.length>0){
-    const last=rows[rows.length-1];
-    const autoPr=(last.pr||0)+(last.pnl||0);
-    document.getElementById('f-pr').value=autoPr;
-    hint.textContent=`↑ 전일 원금 ${fmt(last.pr||0)} + 수익 ${fmt(last.pnl||0)} = ${fmt(autoPr)}원 자동합산`;
-    hint.style.display='block';
-  } else {
-    document.getElementById('f-pr').value='';
-    hint.style.display='none';
-  }
-
-  calcLive();
+  autoFillPrincipal();
   document.getElementById('modal').classList.add('open');
-  // focus date field
-  setTimeout(()=>document.getElementById('f-date').focus(),100);
 }
 
 function openEdit(id){
-  const row=rows.find(r=>r.id===id);
+  const row=allRows.find(r=>r.id===id);
   if(!row){ alert('데이터를 찾을 수 없습니다.'); return; }
   _editId=id;
+  _modalRound=row.round||1;
+  buildModalRoundSel();
   document.getElementById('modal-title').textContent='✏️ 거래 기록 수정';
   document.getElementById('save-btn').textContent='수정 저장';
   document.getElementById('edit-badge-wrap').style.display='block';
   document.getElementById('del-btn').style.display='inline-flex';
   document.getElementById('del-confirm').classList.remove('show');
   document.getElementById('pr-hint').style.display='none';
-
   document.getElementById('f-date').value=row.date||'';
   document.getElementById('f-pr').value=row.pr||'';
   document.getElementById('f-pnl').value=row.pnl||'';
-
   const rt=(row.pr&&row.pnl)?Math.round(row.pnl/row.pr*10000)/100:0;
   document.getElementById('f-rt').value=rt?rt.toFixed(2)+'%':'';
-
-  // Restore rich HTML if available, else use plain text
-  setCE('f-prev', row.prevH || esc(row.prev||'').replace(/\n/g,'<br>'));
-  setCE('f-today', row.todH || esc(row.tod||'').replace(/\n/g,'<br>'));
-  setCE('f-m2',   row.m2H  || esc(row.m2||'').replace(/\n/g,'<br>'));
-
+  setCE('f-prev', row.prevH||esc(row.prev||'').replace(/\n/g,'<br>'));
+  setCE('f-today',row.todH ||esc(row.tod||'').replace(/\n/g,'<br>'));
+  setCE('f-m2',   row.m2H  ||esc(row.m2||'').replace(/\n/g,'<br>'));
   calcLive();
   document.getElementById('modal').classList.add('open');
 }
@@ -533,37 +704,25 @@ async function saveRow(){
   const date=document.getElementById('f-date').value;
   const pr=parseFloat(document.getElementById('f-pr').value);
   if(!date||!pr){ alert('날짜와 원금은 필수입니다.'); return; }
-
   const pnl=parseFloat(document.getElementById('f-pnl').value)||0;
   const rt=(pr&&pnl)?Math.round(pnl/pr*10000)/100:0;
-
-  // CE fields: save both plain text (for Sheets readability) and HTML (for color/bold)
-  const prevText=getCEText('f-prev');
-  const todText =getCEText('f-today');
-  const m2Text  =getCEText('f-m2');
-  const prevH   =getCEHtml('f-prev');
-  const todH    =getCEHtml('f-today');
-  const m2H     =getCEHtml('f-m2');
-
   const btn=document.getElementById('save-btn');
   btn.disabled=true; btn.textContent='저장 중...';
-
+  const payload={
+    date,pr,pnl,rt,
+    round:_modalRound,
+    prev:getCEText('f-prev'), tod:getCEText('f-today'), m2:getCEText('f-m2'),
+    prevH:getCEHtml('f-prev'), todH:getCEHtml('f-today'), m2H:getCEHtml('f-m2')
+  };
   try{
-    const payload={date,pr,pnl,rt,
-      prev:prevText, tod:todText, m2:m2Text,
-      prevH, todH, m2H};
-    if(_editId){ await apiUpdate({id:_editId,...payload}); }
-    else        { await apiAdd(payload); }
+    if(_editId) await apiUpdate({id:_editId,...payload});
+    else        await apiAdd(payload);
+    curRound=_modalRound;
     closeModal();
-  }catch(e){
-    alert((_editId?'수정':'저장')+' 실패: '+e.message);
-  }finally{
-    btn.disabled=false;
-    btn.textContent=_editId?'수정 저장':'저장';
-  }
+  }catch(e){ alert((_editId?'수정':'저장')+' 실패: '+e.message); }
+  finally{ btn.disabled=false; btn.textContent=_editId?'수정 저장':'저장'; }
 }
 
-/* delete */
 function showDelConfirm(){ document.getElementById('del-confirm').classList.add('show'); document.getElementById('del-btn').style.display='none'; }
 function cancelDelete(){ document.getElementById('del-confirm').classList.remove('show'); document.getElementById('del-btn').style.display='inline-flex'; }
 async function doDelete(){
@@ -574,8 +733,8 @@ async function doDelete(){
   catch(e){ alert('삭제 실패: '+e.message); btn.disabled=false; btn.textContent='삭제 확인'; }
 }
 async function quickDelete(id){
-  const row=rows.find(r=>r.id===id);
-  if(!confirm('['+((row&&row.date)||id)+'] 기록을 삭제할까요?\nGoogle Sheets에서도 삭제됩니다.')) return;
+  const row=allRows.find(r=>r.id===id);
+  if(!confirm('['+((row&&row.date)||id)+'] 기록을 삭제할까요?')) return;
   try{ await apiDelete(id); }catch(e){ alert('삭제 실패: '+e.message); }
 }
 
@@ -593,26 +752,30 @@ function toHtml(s){ return esc(s||'').replace(/\n/g,'<br>'); }
 function renderEmpty(msg){
   document.getElementById('row-count').textContent='0';
   document.getElementById('tbody').innerHTML=
-    `<tr><td colspan="7" class="empty-row">${msg||'데이터가 없습니다.<br><small>[＋ 거래 추가] 버튼으로 첫 기록을 입력해보세요.</small>'}</td></tr>`;
-  upd(0,0,0);
+    `<tr><td colspan="7" class="empty-row">${msg||`${ROUND_NAMES[curRound-1]} 데이터가 없습니다.<br><small>[＋ 거래 추가] 버튼으로 첫 기록을 입력해보세요.</small>`}</td></tr>`;
 }
 
 function render(){
+  // ── overview cards ──
+  renderOverview();
+
+  // ── current round rows ──
+  const rows=rowsOf(curRound);
   const tb=document.getElementById('tbody');
   document.getElementById('row-count').textContent=rows.length;
-  if(!rows.length){ renderEmpty(); return; }
+  document.getElementById('round-label-small').textContent=ROUND_NAMES[curRound-1]+' · ';
+
+  if(!rows.length){ renderEmpty(); updateSummary(0,0,0); return; }
 
   let cum=0;
   const init=rows[0].pr;
   let html='';
-
   rows.forEach(r=>{
     cum+=r.pnl;
     const rt=(r.pr&&r.pnl)?Math.round(r.pnl/r.pr*10000)/100:0;
     const prevH=r.prevH||toHtml(r.prev);
     const todH =r.todH ||toHtml(r.tod);
     const m2H  =r.m2H  ||toHtml(r.m2);
-
     html+=`
     <tr>
       <td><div class="td-p td-date">${r.date?r.date.replace(/-/g,'.'):'-'}<br>
@@ -641,20 +804,49 @@ function render(){
       </div></td>
     </tr>`;
   });
-
   const tr=init?cum/init*100:0;
   html+=`<tr class="row-total">
     <td colspan="2"><div class="td-p" style="color:var(--text3);font-size:10.5px;font-family:var(--sans)">누계</div></td>
     <td><div class="td-p td-num ${cc(cum)}">${(cum>=0?'+':'')+fmt(cum)}</div></td>
     <td><div class="td-p td-num ${cc(tr)}">${fmtR(tr)}</div></td>
     <td colspan="3"></td></tr>`;
-
   tb.innerHTML=html;
+
   const last=rows[rows.length-1];
-  upd(init,last.pr+last.pnl,cum);
+  updateSummary(init, last.pr+last.pnl, cum);
 }
 
-function upd(init,cur,cum){
+function renderOverview(){
+  const container=document.getElementById('ov-rounds');
+  // compute base for 5회 final target from round 1 start
+  const base=roundStartPr(1)||0;
+  const finalTarget=base*Math.pow(2,TOTAL_ROUNDS);
+
+  let html='';
+  for(let r=1;r<=TOTAL_ROUNDS;r++){
+    const rows=rowsOf(r);
+    const startPr=roundStartPr(r);
+    const target=startPr*2;
+    let cur=startPr;
+    if(rows.length>0){
+      const last=rows[rows.length-1];
+      cur=(last.pr||0)+(last.pnl||0);
+    }
+    const pct=startPr?Math.min(cur/target*100,100):0;
+    const done=cur>=target&&target>0;
+    const isCur=r===curRound;
+    html+=`<div class="ov-round${done?' done':''}${isCur?' current':''}" onclick="switchRound(${r})" style="cursor:pointer">
+      <div class="ov-r-label${done?' done':''}">${ROUND_NAMES[r-1]}${done?' ✓':isCur?' 진행중':''}${r===TOTAL_ROUNDS&&done?` → ${fmt(finalTarget)}원`:''}
+      </div>
+      <div class="ov-r-range">${startPr?fmt(startPr)+'→'+fmt(target):'미시작'}</div>
+      <div class="ov-r-pct" style="color:${done?'var(--green)':ROUND_COLORS[r-1]}">${pct.toFixed(1)}%</div>
+      <div class="ov-bar" style="width:${pct}%;background:${ROUND_COLORS[r-1]}"></div>
+    </div>`;
+  }
+  container.innerHTML=html;
+}
+
+function updateSummary(init,cur,cum){
   const rate=init?cum/init*100:0;
   document.getElementById('s-init').textContent=init?fmt(init)+'원':'—';
   document.getElementById('s-cur').textContent =cur ?fmt(cur) +'원':'—';
@@ -662,118 +854,165 @@ function upd(init,cur,cum){
   pe.textContent=cum?(cum>=0?'+':'')+fmt(cum)+'원':'—'; pe.className='si-val '+cc(cum);
   const re=document.getElementById('s-rate');
   re.textContent=rate?fmtR(rate):'—'; re.className='si-val '+cc(rate);
-  document.getElementById('s-days').textContent=rows.length+'일';
-  document.getElementById('s-tgt').textContent =init?fmt(init*2)+'원':'—';
+  document.getElementById('s-days').textContent=rowsOf(curRound).length+'일';
+
+  const target=init*2;
+  document.getElementById('s-tgt').textContent=init?fmt(target)+'원':'—';
+
+  // 5회 최종 목표
+  const base=roundStartPr(1)||0;
+  document.getElementById('s-final').textContent=base?fmt(base*Math.pow(2,TOTAL_ROUNDS))+'원':'—';
+
   const prog=init&&cur>init?Math.min((cur-init)/init*100,100):0;
-  document.getElementById('pbar').style.width  =Math.max(prog,0)+'%';
-  document.getElementById('ppct').textContent  =Math.max(prog,0).toFixed(1)+'%';
-  document.getElementById('ptxt').textContent  =init&&cur?'목표까지 '+fmt(Math.max(init*2-cur,0))+'원 남음':'';
+  document.getElementById('pbar').style.width=Math.max(prog,0)+'%';
+  document.getElementById('ppct').textContent=Math.max(prog,0).toFixed(1)+'%';
+
+  const done=cur>=target&&target>0;
+  document.getElementById('prog-lbl').textContent=ROUND_NAMES[curRound-1]+' 달성률';
+  document.getElementById('ptxt').textContent=
+    done?`🎉 ${ROUND_NAMES[curRound-1]} 목표 달성!`:
+    (init&&cur?`목표까지 ${fmt(Math.max(target-cur,0))}원 남음`:'');
 }
 
 /* ══════════════════════════════
    FORMAT TOOLBAR
-   — 테이블 .rich 셀 AND 모달 CE 필드 모두 지원
 ══════════════════════════════ */
-let _sel=null;          // saved Selection (for table cells)
-let _ceTarget=null;     // CE target el (modal fields OR table rich cells)
-let _richRow=null;      // row data for table .rich cells
-let _richFld=null;      // field name for table .rich cells
+/* ══════════════════════════════
+   FORMAT TOOLBAR
+   Range를 직접 조작해서 <span> 삽입 — execCommand 미사용
+══════════════════════════════ */
+let _savedRange=null;   // 저장된 Range 객체
+let _hostEl=null;       // .rich 셀 또는 contenteditable CE 필드
+let _richRow=null;
+let _richFld=null;
 
-function isInModal(el){
-  return document.getElementById('modal').contains(el);
-}
+function isInModal(el){ return document.getElementById('modal').contains(el); }
 
-/* mouseup: detect drag selection anywhere */
+/* ── 드래그 끝난 시점 감지 ── */
 document.addEventListener('mouseup', e=>{
-  // small delay so selection is settled
+  // ftb 위에서 떼는 경우는 무시
+  if(document.getElementById('ftb').contains(e.target)) return;
+
   setTimeout(()=>{
-    const sel=window.getSelection();
-    if(!sel||sel.isCollapsed||!sel.toString().trim()) return;
+    const sel = window.getSelection();
+    if(!sel || sel.isCollapsed || !sel.toString().trim()){ hideFtb(); return; }
 
-    const range=sel.getRangeAt(0);
-    const ancestor=range.commonAncestorContainer.nodeType===3
-      ?range.commonAncestorContainer.parentElement
-      :range.commonAncestorContainer;
+    const range = sel.getRangeAt(0);
+    const anc = range.commonAncestorContainer.nodeType===3
+      ? range.commonAncestorContainer.parentElement
+      : range.commonAncestorContainer;
 
-    // Check if inside a .rich cell (table)
-    const richEl=ancestor.closest('.rich');
-    // Check if inside a modal CE field
-    const ceEl=ancestor.closest('[contenteditable="true"]');
+    // 테이블 .rich 셀
+    const richEl = anc.closest('.rich');
+    // 모달 contenteditable
+    const ceEl   = anc.closest('[contenteditable="true"]');
 
     if(richEl){
-      _ceTarget=richEl;
-      const rid=richEl.dataset.rid;
-      _richFld=richEl.dataset.fld;
-      _richRow=rows.find(r=>r.id===rid)||null;
-      _sel=sel;
+      // .rich는 기본적으로 contenteditable=false — 잠깐 true로 전환
+      richEl.contentEditable = 'true';
+      _hostEl   = richEl;
+      _richFld  = richEl.dataset.fld;
+      _richRow  = allRows.find(r=>r.id===richEl.dataset.rid)||null;
+      _savedRange = range.cloneRange();
       showFtb(e.clientX, e.clientY);
     } else if(ceEl && isInModal(ceEl)){
-      _ceTarget=ceEl;
-      _richRow=null; _richFld=null;
-      _sel=sel;
+      _hostEl   = ceEl;
+      _richRow  = null;
+      _richFld  = null;
+      _savedRange = range.cloneRange();
       showFtb(e.clientX, e.clientY);
     }
-  },10);
+  }, 20);
 });
 
-/* hide toolbar when clicking elsewhere */
+/* ── 툴바 외부 클릭 시 닫기 ── */
 document.addEventListener('mousedown', e=>{
-  const ftb=document.getElementById('ftb');
-  if(ftb&&ftb.contains(e.target)) return; // clicking toolbar itself → keep
-  // hide if clicking outside toolbar
-  const sel=window.getSelection();
-  if(!sel||sel.isCollapsed) hideFtb();
+  const ftb = document.getElementById('ftb');
+  if(ftb.contains(e.target)) return; // 툴바 클릭은 무시
+  hideFtb();
 });
 
 function showFtb(x,y){
   const fb=document.getElementById('ftb'); fb.classList.add('show');
-  const bw=340,bh=52;
-  let l=Math.min(x,window.innerWidth-bw-8);
+  const bw=340, bh=52;
+  let l=Math.min(x, window.innerWidth-bw-8);
   let t=y-bh-14; if(t<8) t=y+16;
-  fb.style.left=Math.max(8,l)+'px'; fb.style.top=Math.max(8,t)+'px';
+  fb.style.left=Math.max(8,l)+'px';
+  fb.style.top =Math.max(8,t)+'px';
 }
+
 function hideFtb(){
   document.getElementById('ftb').classList.remove('show');
-  _ceTarget=null; _richRow=null; _richFld=null; _sel=null;
+  // .rich 셀 다시 읽기 전용으로
+  if(_hostEl && _hostEl.classList.contains('rich')){
+    _hostEl.contentEditable='false';
+  }
+  _hostEl=null; _richRow=null; _richFld=null; _savedRange=null;
 }
 
-function restoreAndExec(cmd, val){
-  if(!_ceTarget) return;
-  // For table .rich cells: make temporarily editable
-  let wasEditable=false;
-  if(!_ceTarget.isContentEditable){
-    _ceTarget.contentEditable='true';
-    wasEditable=false;
-  } else { wasEditable=true; }
+/* ── 핵심: Range에 직접 span 씌우기 ── */
+function applyColor(color){
+  if(!_savedRange || !_hostEl) return;
+  wrapRange(node => {
+    node.style.color = color;
+  });
+}
 
-  // Restore selection
-  if(_sel){
-    const s=window.getSelection();
-    s.removeAllRanges();
-    try{ s.addRange(_sel.getRangeAt(0).cloneRange()); }catch(err){}
-  }
+function applyBold(e){
+  e.preventDefault();
+  if(!_savedRange || !_hostEl) return;
+  wrapRange(node => {
+    // 이미 bold면 해제
+    const isBold = node.style.fontWeight==='bold' ||
+      window.getComputedStyle(node).fontWeight>='600';
+    node.style.fontWeight = isBold ? 'normal' : 'bold';
+  });
+}
 
-  document.execCommand('styleWithCSS',false,true);
-  document.execCommand(cmd,false,val||null);
+function applyReset(e){
+  e.preventDefault();
+  if(!_savedRange || !_hostEl) return;
+  wrapRange(node => {
+    node.style.color='';
+    node.style.fontWeight='';
+  });
+}
 
-  // Save updated HTML
-  if(_richRow && _richFld){
-    // table cell
-    _richRow[_richFld]=_ceTarget.innerHTML;
-    clearTimeout(_ceTarget._t);
-    _ceTarget._t=setTimeout(()=>
-      apiUpdate(_richRow).catch(err=>console.warn('서식저장실패:',err)),800);
-    if(!wasEditable) setTimeout(()=>{ _ceTarget.contentEditable='false'; },100);
-  }
-  // For modal CE fields, HTML is collected on save — nothing extra needed
+/**
+ * _savedRange 안의 텍스트를 <span>으로 감싸고 styleCallback으로 스타일 적용.
+ * 이미 span 안에 있으면 해당 span을 재사용.
+ */
+function wrapRange(styleCallback){
+  const range = _savedRange.cloneRange();
 
+  // 선택 범위가 _hostEl 안에 있는지 확인
+  if(!_hostEl.contains(range.commonAncestorContainer)) return;
+
+  // 선택 텍스트를 DocumentFragment로 추출 → span으로 감싸기
+  const frag = range.extractContents();
+  const span  = document.createElement('span');
+  span.appendChild(frag);
+  styleCallback(span);
+  range.insertNode(span);
+
+  // 선택 해제
   window.getSelection().removeAllRanges();
+
+  // 저장 (테이블 셀인 경우 Sheets에도 push)
+  afterFormat();
+}
+
+function afterFormat(){
+  if(!_hostEl) return;
+  if(_richRow && _richFld){
+    _richRow[_richFld] = _hostEl.innerHTML;
+    clearTimeout(_hostEl._saveTimer);
+    _hostEl._saveTimer = setTimeout(()=>{
+      apiUpdate(_richRow).catch(err=>console.warn('서식 저장 실패:', err));
+    }, 800);
+  }
   hideFtb();
 }
-
-function applyColor(c){ restoreAndExec('foreColor',c); }
-function applyBold(e){ e.preventDefault(); restoreAndExec('bold'); }
-function applyReset(e){ e.preventDefault(); restoreAndExec('removeFormat'); }
 </script>
 </body>
 </html>
