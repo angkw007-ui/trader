@@ -35,7 +35,6 @@ body{font-family:var(--sans);background:#f1f3f5;color:var(--text);min-height:100
 .hdr-title{font-size:14px;font-weight:700;}
 .hdr-sub{font-size:10px;color:var(--text3);}
 .hdr-r{display:flex;gap:6px;align-items:center;}
-
 .btn{padding:6px 13px;border-radius:6px;border:1px solid var(--border2);
   background:#fff;color:var(--text);font-family:var(--sans);font-size:12px;
   font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap;}
@@ -50,36 +49,30 @@ body{font-family:var(--sans);background:#f1f3f5;color:var(--text);min-height:100
 .sum-bar{background:#fff;border-bottom:1px solid var(--border);
   display:flex;overflow-x:auto;padding:0 20px;-webkit-overflow-scrolling:touch;}
 .sum-bar::-webkit-scrollbar{height:0;}
-.si{padding:9px 18px 9px 0;margin-right:18px;border-right:1px solid var(--border);
-  white-space:nowrap;min-width:120px;}
+.si{padding:9px 18px 9px 0;margin-right:18px;border-right:1px solid var(--border);white-space:nowrap;min-width:120px;}
 .si:last-child{border-right:none;}
 .si-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px;}
 .si-val{font-size:15px;font-weight:700;font-family:var(--mono);}
 .pos{color:var(--red);}.neg{color:var(--blue);}.neu{color:var(--text);}
 
 /* ── PROGRESS ── */
-.prog{background:#fff;border-bottom:1px solid var(--border);
-  padding:8px 20px;display:flex;align-items:center;gap:12px;}
+.prog{background:#fff;border-bottom:1px solid var(--border);padding:8px 20px;display:flex;align-items:center;gap:12px;}
 .prog-lbl{font-size:10px;color:var(--text3);white-space:nowrap;}
 .prog-track{flex:1;height:5px;background:var(--bg3);border-radius:99px;overflow:hidden;max-width:360px;}
 .prog-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--green),#74c69d);transition:width .5s ease;}
 .prog-pct{font-size:11px;font-weight:700;font-family:var(--mono);color:var(--green);white-space:nowrap;}
 .prog-sub{font-size:10px;color:var(--text4);}
 
-/* ── STATUS ── */
+/* ── STATUS / SAVING ── */
 .status{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3);}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--text4);}
-.dot.ok{background:var(--green);}
-.dot.err{background:var(--red);}
-.dot.loading{background:var(--amber);animation:blink 1s infinite;}
+.dot.ok{background:var(--green);}.dot.err{background:var(--red);}.dot.loading{background:var(--amber);animation:blink 1s infinite;}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:.25;}}
-
-/* ── SAVING ── */
 .saving{display:none;align-items:center;gap:5px;font-size:11px;color:var(--amber);}
 .saving.show{display:flex;}
 .spin{width:11px;height:11px;border:2px solid var(--amber);border-top-color:transparent;
-  border-radius:50%;animation:rotate .7s linear infinite;flex-shrink:0;}
-@keyframes rotate{to{transform:rotate(360deg);}}
+  border-radius:50%;animation:rot .7s linear infinite;flex-shrink:0;}
+@keyframes rot{to{transform:rotate(360deg);}}
 
 /* ── MAIN ── */
 .main{padding:16px 20px;}
@@ -99,7 +92,6 @@ thead th:last-child{border-right:none;}
 thead th.num{text-align:right;}
 .c-date{width:92px;}.c-num{width:95px;}.c-rate{width:72px;}
 .c-strat{min-width:280px;}.c-memo{min-width:260px;}.c-act{width:60px;}
-
 tbody tr{border-bottom:1px solid var(--border);transition:background .1s;}
 tbody tr:last-child{border-bottom:none;}
 tbody tr:hover{background:#f8fffe;}
@@ -108,8 +100,6 @@ td:last-child{border-right:none;}
 .td-p{padding:8px 11px;}
 .td-date{font-family:var(--mono);font-size:11px;color:var(--text2);white-space:nowrap;line-height:1.5;}
 .td-num{font-family:var(--mono);font-size:11.5px;text-align:right;white-space:nowrap;font-weight:600;}
-
-/* Strategy cell */
 .strat-cell{display:flex;flex-direction:column;min-width:280px;}
 .strat-sec{padding:7px 11px;flex:1;}
 .strat-sec:first-child{background:var(--prev-bg);border-bottom:1px solid var(--prev-border);}
@@ -119,96 +109,105 @@ td:last-child{border-right:none;}
 .badge-prev{background:var(--prev-border);color:var(--prev-text);}
 .badge-today{background:var(--today-border);color:var(--today-text);}
 .rich{font-size:11.5px;line-height:1.75;color:var(--text2);
-  user-select:text;-webkit-user-select:text;cursor:text;outline:none;}
+  user-select:text;-webkit-user-select:text;outline:none;}
 .td-memo-wrap{padding:8px 11px;}
-
-/* Action buttons */
 .act-btns{display:flex;flex-direction:column;gap:4px;align-items:center;padding:8px 6px;}
 .ic-btn{background:none;border:none;cursor:pointer;font-size:14px;
   padding:3px 5px;border-radius:4px;transition:all .15s;line-height:1;}
 .ic-btn.edit:hover{background:var(--blue-bg);}
 .ic-btn.del:hover{background:var(--red-bg);}
-
 .row-total{border-top:2px solid var(--border2);}
 .row-total .td-p{background:var(--bg2);font-weight:700;font-family:var(--mono);font-size:11.5px;}
 .empty-row td{text-align:center;color:var(--text4);padding:56px 20px;font-size:13px;}
 
 /* ── FORMAT TOOLBAR ── */
 .ftb{display:none;position:fixed;background:#fff;border:1px solid var(--border2);
-  border-radius:10px;box-shadow:var(--sh-lg);padding:6px 10px;
-  z-index:500;align-items:center;gap:4px;flex-wrap:wrap;max-width:340px;}
+  border-radius:10px;box-shadow:var(--sh-lg);padding:7px 10px;
+  z-index:600;align-items:center;gap:4px;flex-wrap:wrap;max-width:340px;}
 .ftb.show{display:flex;}
 .ftb-lbl{font-size:9px;color:var(--text3);white-space:nowrap;}
-.ftb-sep{width:1px;height:18px;background:var(--border);margin:0 2px;flex-shrink:0;}
-.sw{width:20px;height:20px;border-radius:4px;border:2px solid transparent;
+.ftb-sep{width:1px;height:18px;background:var(--border);margin:0 3px;flex-shrink:0;}
+.sw{width:21px;height:21px;border-radius:4px;border:2px solid transparent;
   cursor:pointer;transition:transform .1s,border-color .1s;flex-shrink:0;}
 .sw:hover{transform:scale(1.2);border-color:#868e96;}
 .ftb-btn{font-size:11px;padding:2px 7px;border-radius:5px;
   border:1px solid var(--border2);background:var(--bg3);
-  cursor:pointer;color:var(--text2);white-space:nowrap;line-height:1.6;}
+  cursor:pointer;color:var(--text2);white-space:nowrap;line-height:1.7;}
 .ftb-btn:hover{background:var(--bg4);}
 .ftb-bold{font-weight:700;font-size:13px;padding:1px 8px;}
-.ftb-x{font-size:12px;color:var(--text3);cursor:pointer;padding:2px 4px;border-radius:4px;margin-left:2px;}
+.ftb-x{font-size:13px;color:var(--text3);cursor:pointer;padding:2px 5px;border-radius:4px;margin-left:2px;}
 .ftb-x:hover{color:var(--red);}
 
 /* ── MODAL ── */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.32);
-  z-index:300;align-items:center;justify-content:center;padding:16px;}
+  z-index:400;align-items:flex-start;justify-content:center;
+  padding:20px 16px;overflow-y:auto;}
 .overlay.open{display:flex;}
 .modal{background:#fff;border:1px solid var(--border);border-radius:14px;
-  padding:22px;width:100%;max-width:700px;max-height:94vh;overflow-y:auto;box-shadow:var(--sh-lg);}
+  padding:22px;width:100%;max-width:720px;box-shadow:var(--sh-lg);
+  margin:auto;}
 .modal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
 .modal-t{font-size:15px;font-weight:700;}
-.modal-close{font-size:18px;color:var(--text3);cursor:pointer;background:none;border:none;
+.modal-x{font-size:18px;color:var(--text3);cursor:pointer;background:none;border:none;
   padding:2px 6px;border-radius:4px;line-height:1;}
-.modal-close:hover{color:var(--red);background:var(--red-bg);}
-
+.modal-x:hover{color:var(--red);background:var(--red-bg);}
 .fg{display:flex;flex-direction:column;gap:4px;}
 .fg label{font-size:9.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;}
-.fg input,.fg textarea{background:var(--bg2);border:1px solid var(--border2);
-  border-radius:6px;color:var(--text);font-family:var(--sans);font-size:13px;
+.fg input{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;
+  color:var(--text);font-family:var(--sans);font-size:13px;
   padding:7px 10px;outline:none;transition:border-color .15s,box-shadow .15s;width:100%;}
-.fg input:focus,.fg textarea:focus{border-color:var(--blue);
-  box-shadow:0 0 0 3px rgba(25,113,194,.1);background:#fff;}
-.fg textarea{resize:vertical;min-height:86px;line-height:1.7;}
+.fg input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(25,113,194,.1);background:#fff;}
+.fg input[readonly]{background:var(--bg3);color:var(--text3);cursor:default;}
 .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .full{grid-column:1/-1;}
-.mfooter{display:flex;gap:8px;justify-content:space-between;align-items:center;
-  margin-top:16px;padding-top:14px;border-top:1px solid var(--border);}
-.mfooter-r{display:flex;gap:8px;}
-
 .lc{background:var(--bg2);border:1px solid var(--border);border-radius:7px;
-  padding:9px 12px;display:flex;gap:20px;flex-wrap:wrap;
-  font-family:var(--mono);font-size:11px;margin:9px 0;}
+  padding:9px 12px;display:flex;gap:20px;flex-wrap:wrap;font-family:var(--mono);font-size:11px;margin:9px 0;}
 .lci .lcl{color:var(--text3);font-size:9px;text-transform:uppercase;}
 .lci .lcv{font-size:13px;font-weight:600;margin-top:1px;}
 
-/* Strategy inputs */
+/* ── CONTENTEDITABLE EDITOR FIELDS ── */
+/* shared editor style */
+.ce-field{
+  background:var(--bg2);border:1px solid var(--border2);border-radius:6px;
+  color:var(--text);font-family:var(--sans);font-size:13px;
+  padding:8px 10px;outline:none;min-height:90px;line-height:1.75;
+  transition:border-color .15s,box-shadow .15s;
+  white-space:pre-wrap;word-break:break-word;
+  -webkit-user-modify:read-write-plaintext-only;
+  user-select:text;-webkit-user-select:text;
+  overflow-y:auto;
+}
+.ce-field:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(25,113,194,.1);background:#fff;}
+.ce-field:empty::before{content:attr(data-placeholder);color:var(--text4);pointer-events:none;}
+/* prev / today section editors */
 .strat-inputs{border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-top:4px;}
 .strat-input-sec{padding:10px 12px;}
 .strat-input-sec:first-child{background:var(--prev-bg);border-bottom:1px solid var(--prev-border);}
 .strat-input-sec:last-child{background:var(--today-bg);}
 .strat-input-lbl{font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
-  margin-bottom:5px;display:block;}
+  margin-bottom:6px;display:block;}
 .lbl-prev{color:var(--prev-text);}.lbl-today{color:var(--today-text);}
-.strat-input-sec textarea{background:rgba(255,255,255,.75);border:1px solid;
-  border-radius:5px;width:100%;font-family:var(--sans);font-size:12.5px;
-  padding:7px 9px;outline:none;resize:vertical;min-height:80px;line-height:1.7;
-  color:var(--text);transition:border-color .15s,box-shadow .15s;}
-.strat-input-sec:first-child textarea{border-color:var(--prev-border);}
-.strat-input-sec:last-child textarea{border-color:var(--today-border);}
-.strat-input-sec textarea:focus{box-shadow:0 0 0 3px rgba(25,113,194,.1);background:#fff;}
+.ce-prev{background:rgba(255,255,255,.7);border:1px solid var(--prev-border);}
+.ce-prev:focus{border-color:#1971c2;box-shadow:0 0 0 3px rgba(25,113,194,.1);background:#fff;}
+.ce-today{background:rgba(255,255,255,.7);border:1px solid var(--today-border);}
+.ce-today:focus{border-color:#2f9e44;box-shadow:0 0 0 3px rgba(47,158,68,.1);background:#fff;}
 
-/* Delete confirm inside modal */
+.fg-label-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.fg-label-row label{font-size:9.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;}
+.fg-label-hint{font-size:9px;color:var(--amber);background:var(--amber-bg);
+  padding:1px 6px;border-radius:3px;border:1px solid rgba(230,119,0,.2);}
+
+/* delete confirm */
 .del-confirm{background:var(--red-bg);border:1px solid rgba(224,49,49,.25);
   border-radius:8px;padding:12px 14px;margin-top:12px;display:none;}
 .del-confirm.show{display:block;}
 .del-confirm p{font-size:12px;color:var(--red);margin-bottom:10px;font-weight:500;}
-
-/* Edit indicator badge */
 .edit-badge{display:inline-flex;align-items:center;gap:5px;
   background:var(--blue-bg);border:1px solid rgba(25,113,194,.2);
   color:var(--blue);font-size:11px;padding:3px 9px;border-radius:5px;}
+.mfooter{display:flex;gap:8px;justify-content:space-between;align-items:center;
+  margin-top:16px;padding-top:14px;border-top:1px solid var(--border);}
+.mfooter-r{display:flex;gap:8px;}
 
 @media(max-width:640px){
   .hdr,.sum-bar,.prog,.main{padding-left:14px;padding-right:14px;}
@@ -231,10 +230,7 @@ td:last-child{border-right:none;}
   </div>
   <div class="hdr-r">
     <div class="saving" id="saving-ind"><div class="spin"></div>저장 중...</div>
-    <div class="status">
-      <div class="dot" id="conn-dot"></div>
-      <span id="conn-txt">연결 중...</span>
-    </div>
+    <div class="status"><div class="dot" id="conn-dot"></div><span id="conn-txt">연결 중...</span></div>
     <button class="btn" onclick="loadData()">↻ 새로고침</button>
     <button class="btn btn-g" onclick="openAdd()">＋ 거래 추가</button>
   </div>
@@ -258,12 +254,12 @@ td:last-child{border-right:none;}
   <div class="prog-sub" id="ptxt"></div>
 </div>
 
-<!-- MAIN TABLE -->
+<!-- TABLE -->
 <div class="main">
   <div class="toolbar">
     <div class="tb-l">
       총 <strong id="row-count">0</strong>건
-      <span class="tb-hint">✦ 비고·전략란 드래그 → 색상·굵기 변경</span>
+      <span class="tb-hint">✦ 전략·결과란 텍스트 드래그 → 색상·굵기 변경</span>
     </div>
   </div>
   <div class="tcard">
@@ -284,72 +280,89 @@ td:last-child{border-right:none;}
   </div>
 </div>
 
-<!-- FORMAT TOOLBAR (color + bold) -->
+<!-- FORMAT TOOLBAR -->
 <div class="ftb" id="ftb">
   <span class="ftb-lbl">색상</span>
-  <div class="sw" style="background:#e03131" onclick="applyFmt('color','#e03131')"></div>
-  <div class="sw" style="background:#1971c2" onclick="applyFmt('color','#1971c2')"></div>
-  <div class="sw" style="background:#2f9e44" onclick="applyFmt('color','#2f9e44')"></div>
-  <div class="sw" style="background:#e67700" onclick="applyFmt('color','#e67700')"></div>
-  <div class="sw" style="background:#6741d9" onclick="applyFmt('color','#6741d9')"></div>
-  <div class="sw" style="background:#0c8599" onclick="applyFmt('color','#0c8599')"></div>
-  <div class="sw" style="background:#c92a2a" onclick="applyFmt('color','#c92a2a')"></div>
-  <div class="sw" style="background:#212529" onclick="applyFmt('color','#212529')"></div>
+  <div class="sw" style="background:#e03131" onclick="applyColor('#e03131')"></div>
+  <div class="sw" style="background:#1971c2" onclick="applyColor('#1971c2')"></div>
+  <div class="sw" style="background:#2f9e44" onclick="applyColor('#2f9e44')"></div>
+  <div class="sw" style="background:#e67700" onclick="applyColor('#e67700')"></div>
+  <div class="sw" style="background:#6741d9" onclick="applyColor('#6741d9')"></div>
+  <div class="sw" style="background:#0c8599" onclick="applyColor('#0c8599')"></div>
+  <div class="sw" style="background:#c92a2a" onclick="applyColor('#c92a2a')"></div>
+  <div class="sw" style="background:#212529" onclick="applyColor('#212529')"></div>
   <div class="ftb-sep"></div>
-  <button class="ftb-btn ftb-bold" onclick="applyFmt('bold')"><b>B</b></button>
-  <button class="ftb-btn" onclick="applyFmt('reset')">원래대로</button>
+  <button class="ftb-btn ftb-bold" onmousedown="applyBold(event)"><b>B</b></button>
+  <button class="ftb-btn" onmousedown="applyReset(event)">원래대로</button>
   <span class="ftb-x" onclick="hideFtb()">✕</span>
 </div>
 
 <!-- ADD / EDIT MODAL -->
-<div class="overlay" id="modal">
+<div class="overlay" id="modal" onclick="overlayClick(event)">
   <div class="modal">
     <div class="modal-hdr">
       <div class="modal-t" id="modal-title">📝 거래 기록 추가</div>
-      <button class="modal-close" onclick="closeModal()">✕</button>
+      <button class="modal-x" onclick="closeModal()">✕</button>
     </div>
-
-    <!-- Edit mode indicator -->
     <div id="edit-badge-wrap" style="display:none;margin-bottom:12px;">
-      <span class="edit-badge">✏️ 수정 모드 — 변경할 항목만 수정 후 저장하세요</span>
+      <span class="edit-badge">✏️ 수정 모드 · 변경할 항목만 수정 후 저장</span>
     </div>
 
+    <!-- 숫자 입력 -->
     <div class="fgrid">
       <div class="fg"><label>날짜 *</label><input type="date" id="f-date"/></div>
-      <div class="fg"><label>원금 (원) *</label><input type="number" id="f-pr" placeholder="1000000"/></div>
-      <div class="fg"><label>수익액 (원)</label><input type="number" id="f-pnl" placeholder="78000"/></div>
-      <div class="fg"><label>수익률 (%)</label><input type="number" id="f-rt" placeholder="7.2" step="0.01"/></div>
+      <div class="fg">
+        <label>원금 (원) *</label>
+        <input type="number" id="f-pr" placeholder="1000000" oninput="calcLive()"/>
+        <span id="pr-hint" style="display:none;font-size:10px;color:var(--green);margin-top:2px;"></span>
+      </div>
+      <div class="fg"><label>수익액 (원)</label>
+        <input type="number" id="f-pnl" placeholder="78000" oninput="calcLive()"/>
+      </div>
+      <div class="fg"><label>수익률 (자동계산)</label>
+        <input type="text" id="f-rt" readonly placeholder="수익액 입력 시 자동계산"/>
+      </div>
     </div>
-
     <div class="lc">
-      <div class="lci"><div class="lcl">거래금액</div><div class="lcv neu" id="lc-a">—</div></div>
-      <div class="lci"><div class="lcl">손익</div><div class="lcv neu" id="lc-p">—</div></div>
-      <div class="lci"><div class="lcl">수익률(자동)</div><div class="lcv neu" id="lc-r">—</div></div>
+      <div class="lci"><div class="lcl">원금</div><div class="lcv neu" id="lc-a">—</div></div>
+      <div class="lci"><div class="lcl">수익액</div><div class="lcv neu" id="lc-p">—</div></div>
+      <div class="lci"><div class="lcl">수익률</div><div class="lcv neu" id="lc-r">—</div></div>
     </div>
 
-    <div class="fg full" style="margin-top:6px;">
-      <label>매매 전략</label>
+    <!-- 매매전략 (contenteditable) -->
+    <div style="margin-top:8px;">
+      <div class="fg-label-row">
+        <label>매매 전략</label>
+        <span class="fg-label-hint">✦ 드래그 → 색상·굵기 변경</span>
+      </div>
       <div class="strat-inputs">
         <div class="strat-input-sec">
           <span class="strat-input-lbl lbl-prev">📅 전일 추천</span>
-          <textarea id="f-prev" placeholder="전일 추천 종목 및 전략&#10;예) 삼성중공업: 공통추천1위(K,B,H2)&#10;    대원전선(B상,S)&#10;    한화엔진(CB,H)"></textarea>
+          <div id="f-prev" class="ce-field ce-prev" contenteditable="true"
+            data-placeholder="전일 추천 종목 및 전략&#10;예) 삼성중공업: 공통추천1위(K,B,H2)&#10;    대원전선(B상,S)"></div>
         </div>
         <div class="strat-input-sec">
           <span class="strat-input-lbl lbl-today">🟢 오늘 추천</span>
-          <textarea id="f-today" placeholder="오늘 추천 종목 및 전략&#10;예) 삼성중공업: 넥장 4%상승후 급락 대응&#10;    대원전선(B상,S): 최고가 갱신 재반등&#10;    한화엔진(CB,H)"></textarea>
+          <div id="f-today" class="ce-field ce-today" contenteditable="true"
+            data-placeholder="오늘 추천 종목 및 전략&#10;예) 삼성중공업: 넥장 4%상승후 급락 대응&#10;    대원전선(B상,S): 최고가 갱신 재반등"></div>
         </div>
       </div>
     </div>
 
-    <div class="fg full" style="margin-top:10px;">
-      <label>결과 / 반성 / 교훈</label>
-      <textarea id="f-m2" rows="4"
-        placeholder="예) 지수 하락&#10;장초반 삼성중공업 급락시 손절(-8.5%)&#10;욕심을 버리면 100억이다."></textarea>
+    <!-- 결과/반성 (contenteditable) -->
+    <div style="margin-top:10px;">
+      <div class="fg-label-row">
+        <label>결과 / 반성 / 교훈</label>
+        <span class="fg-label-hint">✦ 드래그 → 색상·굵기 변경</span>
+      </div>
+      <div id="f-m2" class="ce-field" contenteditable="true"
+        data-placeholder="예) 지수 하락&#10;장초반 삼성중공업 급락시 손절(-8.5%)&#10;욕심을 버리면 100억이다."
+        style="min-height:110px;"></div>
     </div>
 
-    <!-- Delete confirm area (edit mode only) -->
+    <!-- 삭제 확인 -->
     <div class="del-confirm" id="del-confirm">
-      <p>⚠️ 이 기록을 삭제하면 Google Sheets에서도 영구적으로 삭제됩니다. 계속할까요?</p>
+      <p>⚠️ 이 기록을 삭제하면 Google Sheets에서도 영구 삭제됩니다. 계속할까요?</p>
       <div style="display:flex;gap:8px;">
         <button class="btn btn-r" id="del-confirm-btn" onclick="doDelete()">삭제 확인</button>
         <button class="btn" onclick="cancelDelete()">취소</button>
@@ -357,10 +370,7 @@ td:last-child{border-right:none;}
     </div>
 
     <div class="mfooter">
-      <div id="mfooter-l">
-        <!-- delete button appears in edit mode -->
-        <button class="btn btn-r" id="del-btn" style="display:none" onclick="showDeleteConfirm()">🗑 삭제</button>
-      </div>
+      <div><button class="btn btn-r" id="del-btn" style="display:none" onclick="showDelConfirm()">🗑 삭제</button></div>
       <div class="mfooter-r">
         <button class="btn" onclick="closeModal()">취소</button>
         <button class="btn btn-g" id="save-btn" onclick="saveRow()">저장</button>
@@ -370,389 +380,400 @@ td:last-child{border-right:none;}
 </div>
 
 <script>
-/* ══════════════════════════════════════════
+/* ══════════════════════════════
    CONFIG
-══════════════════════════════════════════ */
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw5x5IVXPFs21ZQMogkhg2hal2CteCBMY4_ZeZ-zjBK2yFgrZ1AAu4fKl9ZZxE57g1uLQ/exec';
-let rows = [];
-let _editId = null; // null = 추가, string = 수정 중 ID
+══════════════════════════════ */
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxhwJh8oDla9h2MqVdLGmvSLEMCgppy0XvhhI84VNLWXbrzM-Gjrwd0s0k7cn1ewxe87g/exec';
+let rows=[];
+let _editId=null;
 
-/* ══════════════════════════════════════════
+/* ══════════════════════════════
    INIT
-══════════════════════════════════════════ */
+══════════════════════════════ */
 document.getElementById('f-date').value = todayStr();
-['f-pr','f-pnl','f-rt'].forEach(id =>
-  document.getElementById(id).addEventListener('input', calcLive));
 loadData();
 
-function todayStr() { return new Date().toISOString().slice(0,10); }
+function todayStr(){ return new Date().toISOString().slice(0,10); }
 
-/* ══════════════════════════════════════════
-   API — Google Apps Script
-══════════════════════════════════════════ */
-function setConn(s, txt) {
-  const d = document.getElementById('conn-dot');
-  d.className = 'dot' + (s==='ok'?' ok':s==='err'?' err':s==='loading'?' loading':'');
-  document.getElementById('conn-txt').textContent = txt;
+/* ══════════════════════════════
+   API
+══════════════════════════════ */
+function setConn(s,txt){
+  document.getElementById('conn-dot').className='dot'+(s==='ok'?' ok':s==='err'?' err':s==='loading'?' loading':'');
+  document.getElementById('conn-txt').textContent=txt;
 }
-function setSaving(v) {
-  document.getElementById('saving-ind').classList.toggle('show', v);
-}
+function setSaving(v){ document.getElementById('saving-ind').classList.toggle('show',v); }
 
-async function apiFetch(method, body) {
-  const url = method === 'GET'
-    ? SCRIPT_URL + '?action=list&t=' + Date.now()
-    : SCRIPT_URL;
-  const opts = { method, redirect: 'follow' };
-  if (method === 'POST') {
-    opts.headers = { 'Content-Type': 'text/plain' };
-    opts.body = JSON.stringify(body);
-  }
-  const res = await fetch(url, opts);
-  if (!res.ok) throw new Error('HTTP ' + res.status);
-  const data = await res.json();
-  if (!data.ok) throw new Error(data.error || '서버 오류');
-  return data;
+async function apiFetch(method,body){
+  const url=method==='GET'?SCRIPT_URL+'?action=list&t='+Date.now():SCRIPT_URL;
+  const opts={method,redirect:'follow'};
+  if(method==='POST'){opts.headers={'Content-Type':'text/plain'};opts.body=JSON.stringify(body);}
+  const res=await fetch(url,opts);
+  if(!res.ok) throw new Error('HTTP '+res.status);
+  const d=await res.json();
+  if(!d.ok) throw new Error(d.error||'서버 오류');
+  return d;
 }
-
-async function loadData() {
+async function loadData(){
   setConn('loading','연결 중...');
-  try {
-    const d = await apiFetch('GET');
-    rows = d.data || [];
+  try{
+    const d=await apiFetch('GET');
+    rows=d.data||[];
     setConn('ok','연결됨 · Google Sheets');
     render();
-  } catch(e) {
-    setConn('err','연결 실패: '+e.message);
-    renderEmpty('연결 실패. 상단 [↻ 새로고침]을 눌러주세요.');
-  }
+  }catch(e){ setConn('err','연결 실패: '+e.message); renderEmpty('연결 실패. [↻ 새로고침]을 눌러주세요.'); }
 }
+async function apiAdd(row){ setSaving(true); try{ await apiFetch('POST',{action:'add',row}); await loadData(); }finally{ setSaving(false); } }
+async function apiUpdate(row){ setSaving(true); try{ await apiFetch('POST',{action:'update',row}); await loadData(); }finally{ setSaving(false); } }
+async function apiDelete(id){ setSaving(true); try{ await apiFetch('POST',{action:'delete',id}); await loadData(); }finally{ setSaving(false); } }
 
-async function apiAdd(row) {
-  setSaving(true);
-  try {
-    const res = await apiFetch('POST', { action:'add', row });
-    // reload to get server-assigned id and sorted order
-    await loadData();
-    return res.row;
-  } finally { setSaving(false); }
-}
-
-async function apiUpdate(row) {
-  setSaving(true);
-  try {
-    await apiFetch('POST', { action:'update', row });
-    await loadData();
-  } finally { setSaving(false); }
-}
-
-async function apiDelete(id) {
-  setSaving(true);
-  try {
-    await apiFetch('POST', { action:'delete', id });
-    await loadData();
-  } finally { setSaving(false); }
-}
-
-/* ══════════════════════════════════════════
+/* ══════════════════════════════
    LIVE CALC
-══════════════════════════════════════════ */
-function calcLive() {
-  const p = parseFloat(document.getElementById('f-pr').value)  || 0;
-  const n = parseFloat(document.getElementById('f-pnl').value) || 0;
-  const r = parseFloat(document.getElementById('f-rt').value)  || 0;
-  const rate = p && n ? n/p*100 : r;
-  sv('lc-a', p ? fmt(p)+'원' : '—', 'neu');
-  sv('lc-p', n ? (n>=0?'+':'')+fmt(n)+'원' : '—', n>0?'pos':n<0?'neg':'neu');
-  sv('lc-r', rate ? (rate>=0?'+':'')+rate.toFixed(2)+'%' : '—', rate>0?'pos':rate<0?'neg':'neu');
+══════════════════════════════ */
+function calcLive(){
+  const p=parseFloat(document.getElementById('f-pr').value)||0;
+  const n=parseFloat(document.getElementById('f-pnl').value)||0;
+  const rt=(p&&n)?Math.round(n/p*10000)/100:0;
+  document.getElementById('f-rt').value=rt?rt.toFixed(2)+'%':'';
+  sv('lc-a',p?fmt(p)+'원':'—','neu');
+  sv('lc-p',n?(n>=0?'+':'')+fmt(n)+'원':'—',n>0?'pos':n<0?'neg':'neu');
+  sv('lc-r',rt?(rt>=0?'+':'')+rt.toFixed(2)+'%':'—',rt>0?'pos':rt<0?'neg':'neu');
 }
 function sv(id,txt,cls){ const e=document.getElementById(id); e.textContent=txt; e.className='lcv '+cls; }
 
-/* ══════════════════════════════════════════
-   MODAL — 추가 / 수정
-══════════════════════════════════════════ */
-function fillForm(row) {
-  document.getElementById('f-date').value  = row ? (row.date||'') : todayStr();
-  document.getElementById('f-pr').value    = row ? (row.pr||'')   : '';
-  document.getElementById('f-pnl').value   = row ? (row.pnl||'')  : '';
-  document.getElementById('f-rt').value    = row ? (row.rt||'')   : '';
-  document.getElementById('f-prev').value  = row ? (row.prev||'') : '';
-  document.getElementById('f-today').value = row ? (row.tod||'')  : '';
-  document.getElementById('f-m2').value    = row ? (row.m2||'')   : '';
+/* ══════════════════════════════
+   CONTENTEDITABLE HELPERS
+══════════════════════════════ */
+// Get plain text from CE field (strip HTML for storage in plain-text columns)
+function getCEText(id){ return document.getElementById(id).innerText||''; }
+// Get HTML from CE field (for rich-text HTML columns)
+function getCEHtml(id){ return document.getElementById(id).innerHTML||''; }
+// Set CE field content
+function setCE(id, html){
+  const el=document.getElementById(id);
+  if(!html||html===''||html==='<br>'){
+    el.innerHTML='';
+  } else {
+    el.innerHTML=html;
+  }
+}
+function clearCE(id){ document.getElementById(id).innerHTML=''; }
+
+/* ══════════════════════════════
+   MODAL
+══════════════════════════════ */
+function openAdd(){
+  _editId=null;
+  document.getElementById('modal-title').textContent='📝 거래 기록 추가';
+  document.getElementById('save-btn').textContent='저장';
+  document.getElementById('edit-badge-wrap').style.display='none';
+  document.getElementById('del-btn').style.display='none';
+  document.getElementById('del-confirm').classList.remove('show');
+
+  // 날짜, 수익액 초기화
+  document.getElementById('f-date').value=todayStr();
+  document.getElementById('f-pnl').value='';
+  document.getElementById('f-rt').value='';
+  clearCE('f-prev'); clearCE('f-today'); clearCE('f-m2');
+
+  // ★ 원금 = 바로 위 행의 원금 + 수익액 자동합산
+  const hint=document.getElementById('pr-hint');
+  if(rows.length>0){
+    const last=rows[rows.length-1];
+    const autoPr=(last.pr||0)+(last.pnl||0);
+    document.getElementById('f-pr').value=autoPr;
+    hint.textContent=`↑ 전일 원금 ${fmt(last.pr||0)} + 수익 ${fmt(last.pnl||0)} = ${fmt(autoPr)}원 자동합산`;
+    hint.style.display='block';
+  } else {
+    document.getElementById('f-pr').value='';
+    hint.style.display='none';
+  }
+
   calcLive();
+  document.getElementById('modal').classList.add('open');
+  // focus date field
+  setTimeout(()=>document.getElementById('f-date').focus(),100);
 }
 
-function openAdd() {
-  _editId = null;
-  document.getElementById('modal-title').textContent = '📝 거래 기록 추가';
-  document.getElementById('save-btn').textContent    = '저장';
-  document.getElementById('edit-badge-wrap').style.display = 'none';
-  document.getElementById('del-btn').style.display   = 'none';
+function openEdit(id){
+  const row=rows.find(r=>r.id===id);
+  if(!row){ alert('데이터를 찾을 수 없습니다.'); return; }
+  _editId=id;
+  document.getElementById('modal-title').textContent='✏️ 거래 기록 수정';
+  document.getElementById('save-btn').textContent='수정 저장';
+  document.getElementById('edit-badge-wrap').style.display='block';
+  document.getElementById('del-btn').style.display='inline-flex';
   document.getElementById('del-confirm').classList.remove('show');
-  fillForm(null);
+  document.getElementById('pr-hint').style.display='none';
+
+  document.getElementById('f-date').value=row.date||'';
+  document.getElementById('f-pr').value=row.pr||'';
+  document.getElementById('f-pnl').value=row.pnl||'';
+
+  const rt=(row.pr&&row.pnl)?Math.round(row.pnl/row.pr*10000)/100:0;
+  document.getElementById('f-rt').value=rt?rt.toFixed(2)+'%':'';
+
+  // Restore rich HTML if available, else use plain text
+  setCE('f-prev', row.prevH || esc(row.prev||'').replace(/\n/g,'<br>'));
+  setCE('f-today', row.todH || esc(row.tod||'').replace(/\n/g,'<br>'));
+  setCE('f-m2',   row.m2H  || esc(row.m2||'').replace(/\n/g,'<br>'));
+
+  calcLive();
   document.getElementById('modal').classList.add('open');
 }
 
-function openEdit(id) {
-  const row = rows.find(r => r.id === id);
-  if (!row) { alert('데이터를 찾을 수 없습니다.'); return; }
-  _editId = id;
-  document.getElementById('modal-title').textContent = '✏️ 거래 기록 수정';
-  document.getElementById('save-btn').textContent    = '수정 저장';
-  document.getElementById('edit-badge-wrap').style.display = 'block';
-  document.getElementById('del-btn').style.display   = 'inline-flex';
-  document.getElementById('del-confirm').classList.remove('show');
-  fillForm(row);
-  document.getElementById('modal').classList.add('open');
-}
-
-function closeModal() {
+function closeModal(){
   document.getElementById('modal').classList.remove('open');
   document.getElementById('del-confirm').classList.remove('show');
-  _editId = null;
+  _editId=null;
 }
-// Close on backdrop click
-document.getElementById('modal').addEventListener('click', e => {
-  if (e.target === document.getElementById('modal')) closeModal();
-});
+function overlayClick(e){ if(e.target===document.getElementById('modal')) closeModal(); }
 
-async function saveRow() {
-  const date = document.getElementById('f-date').value;
-  const pr   = parseFloat(document.getElementById('f-pr').value);
-  if (!date || !pr) { alert('날짜와 원금은 필수입니다.'); return; }
+async function saveRow(){
+  const date=document.getElementById('f-date').value;
+  const pr=parseFloat(document.getElementById('f-pr').value);
+  if(!date||!pr){ alert('날짜와 원금은 필수입니다.'); return; }
 
-  const pnl = parseFloat(document.getElementById('f-pnl').value) || 0;
-  let   rt  = parseFloat(document.getElementById('f-rt').value)  || 0;
-  if (!rt && pr && pnl) rt = pnl/pr*100;
+  const pnl=parseFloat(document.getElementById('f-pnl').value)||0;
+  const rt=(pr&&pnl)?Math.round(pnl/pr*10000)/100:0;
 
-  const btn = document.getElementById('save-btn');
-  btn.disabled = true;
-  btn.textContent = '저장 중...';
+  // CE fields: save both plain text (for Sheets readability) and HTML (for color/bold)
+  const prevText=getCEText('f-prev');
+  const todText =getCEText('f-today');
+  const m2Text  =getCEText('f-m2');
+  const prevH   =getCEHtml('f-prev');
+  const todH    =getCEHtml('f-today');
+  const m2H     =getCEHtml('f-m2');
 
-  const payload = {
-    date, pr, pnl, rt,
-    prev: document.getElementById('f-prev').value,
-    tod:  document.getElementById('f-today').value,
-    m2:   document.getElementById('f-m2').value,
-  };
+  const btn=document.getElementById('save-btn');
+  btn.disabled=true; btn.textContent='저장 중...';
 
-  try {
-    if (_editId) {
-      // 수정: 기존 HTML 서식은 내용이 같으면 유지
-      const old = rows.find(r => r.id === _editId) || {};
-      await apiUpdate({
-        id: _editId,
-        ...payload,
-        prevH: old.prev === payload.prev ? (old.prevH||'') : '',
-        todH:  old.tod  === payload.tod  ? (old.todH ||'') : '',
-        m2H:   old.m2   === payload.m2   ? (old.m2H  ||'') : '',
-      });
-    } else {
-      await apiAdd({ ...payload, prevH:'', todH:'', m2H:'' });
-    }
+  try{
+    const payload={date,pr,pnl,rt,
+      prev:prevText, tod:todText, m2:m2Text,
+      prevH, todH, m2H};
+    if(_editId){ await apiUpdate({id:_editId,...payload}); }
+    else        { await apiAdd(payload); }
     closeModal();
-  } catch(e) {
+  }catch(e){
     alert((_editId?'수정':'저장')+' 실패: '+e.message);
-  } finally {
-    btn.disabled = false;
-    btn.textContent = _editId ? '수정 저장' : '저장';
+  }finally{
+    btn.disabled=false;
+    btn.textContent=_editId?'수정 저장':'저장';
   }
 }
 
-/* ── Delete flow ── */
-function showDeleteConfirm() {
-  document.getElementById('del-confirm').classList.add('show');
-  document.getElementById('del-btn').style.display = 'none';
+/* delete */
+function showDelConfirm(){ document.getElementById('del-confirm').classList.add('show'); document.getElementById('del-btn').style.display='none'; }
+function cancelDelete(){ document.getElementById('del-confirm').classList.remove('show'); document.getElementById('del-btn').style.display='inline-flex'; }
+async function doDelete(){
+  if(!_editId) return;
+  const btn=document.getElementById('del-confirm-btn');
+  btn.disabled=true; btn.textContent='삭제 중...';
+  try{ await apiDelete(_editId); closeModal(); }
+  catch(e){ alert('삭제 실패: '+e.message); btn.disabled=false; btn.textContent='삭제 확인'; }
 }
-function cancelDelete() {
-  document.getElementById('del-confirm').classList.remove('show');
-  document.getElementById('del-btn').style.display = 'inline-flex';
-}
-async function doDelete() {
-  if (!_editId) return;
-  const btn = document.getElementById('del-confirm-btn');
-  btn.disabled = true; btn.textContent = '삭제 중...';
-  try {
-    await apiDelete(_editId);
-    closeModal();
-  } catch(e) {
-    alert('삭제 실패: '+e.message);
-    btn.disabled = false; btn.textContent = '삭제 확인';
-  }
+async function quickDelete(id){
+  const row=rows.find(r=>r.id===id);
+  if(!confirm('['+((row&&row.date)||id)+'] 기록을 삭제할까요?\nGoogle Sheets에서도 삭제됩니다.')) return;
+  try{ await apiDelete(id); }catch(e){ alert('삭제 실패: '+e.message); }
 }
 
-/* ══════════════════════════════════════════
+/* ══════════════════════════════
    RENDER
-══════════════════════════════════════════ */
-const DAYS = ['일','월','화','수','목','금','토'];
-function dstr(d) { try{ return '('+DAYS[new Date(d).getDay()]+')'; }catch{ return ''; } }
-function fmt(n)  { return Math.round(n).toLocaleString(); }
-function fmtR(n) { return (n>=0?'+':'')+n.toFixed(1)+'%'; }
-function cc(n)   { return n>0?'pos':n<0?'neg':'neu'; }
-function esc(s)  { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+══════════════════════════════ */
+const DAYS=['일','월','화','수','목','금','토'];
+function dstr(d){ try{ return '('+DAYS[new Date(d).getDay()]+')'; }catch{ return ''; } }
+function fmt(n){ return Math.round(n).toLocaleString(); }
+function fmtR(n){ return (n>=0?'+':'')+n.toFixed(1)+'%'; }
+function cc(n){ return n>0?'pos':n<0?'neg':'neu'; }
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function toHtml(s){ return esc(s||'').replace(/\n/g,'<br>'); }
 
-function renderEmpty(msg) {
-  document.getElementById('row-count').textContent = '0';
-  document.getElementById('tbody').innerHTML =
+function renderEmpty(msg){
+  document.getElementById('row-count').textContent='0';
+  document.getElementById('tbody').innerHTML=
     `<tr><td colspan="7" class="empty-row">${msg||'데이터가 없습니다.<br><small>[＋ 거래 추가] 버튼으로 첫 기록을 입력해보세요.</small>'}</td></tr>`;
   upd(0,0,0);
 }
 
-function render() {
-  const tb = document.getElementById('tbody');
-  document.getElementById('row-count').textContent = rows.length;
-  if (!rows.length) { renderEmpty(); return; }
+function render(){
+  const tb=document.getElementById('tbody');
+  document.getElementById('row-count').textContent=rows.length;
+  if(!rows.length){ renderEmpty(); return; }
 
-  let cum = 0;
-  const init = rows[0].pr;
-  let html = '';
+  let cum=0;
+  const init=rows[0].pr;
+  let html='';
 
-  rows.forEach(r => {
-    cum += r.pnl;
-    const prevH = r.prevH || toHtml(r.prev);
-    const todH  = r.todH  || toHtml(r.tod);
-    const m2H   = r.m2H   || toHtml(r.m2);
+  rows.forEach(r=>{
+    cum+=r.pnl;
+    const rt=(r.pr&&r.pnl)?Math.round(r.pnl/r.pr*10000)/100:0;
+    const prevH=r.prevH||toHtml(r.prev);
+    const todH =r.todH ||toHtml(r.tod);
+    const m2H  =r.m2H  ||toHtml(r.m2);
 
-    html += `
+    html+=`
     <tr>
-      <td><div class="td-p td-date">
-        ${r.date ? r.date.replace(/-/g,'.') : '—'}<br>
-        <span style="font-size:10px;color:var(--text4)">${dstr(r.date)}</span>
-      </div></td>
+      <td><div class="td-p td-date">${r.date?r.date.replace(/-/g,'.'):'-'}<br>
+        <span style="font-size:10px;color:var(--text4)">${dstr(r.date)}</span></div></td>
       <td><div class="td-p td-num neu">${fmt(r.pr)}</div></td>
       <td><div class="td-p td-num ${cc(r.pnl)}">${r.pnl?(r.pnl>=0?'+':'')+fmt(r.pnl):'—'}</div></td>
-      <td><div class="td-p td-num ${cc(r.rt)}">${r.rt?fmtR(r.rt):'—'}</div></td>
+      <td><div class="td-p td-num ${cc(rt)}">${rt?fmtR(rt):'—'}</div></td>
       <td class="c-strat" style="padding:0">
         <div class="strat-cell">
           <div class="strat-sec">
             <div class="strat-badge badge-prev">📅 전일 추천</div>
-            <div class="rich" id="prev-${r.id}" data-rid="${r.id}" data-fld="prevH"
-              onmouseup="onSel(event)">${prevH||'<span style="color:var(--text4);font-size:11px">—</span>'}</div>
+            <div class="rich" data-rid="${r.id}" data-fld="prevH">${prevH||'<span style="color:var(--text4);font-size:11px">—</span>'}</div>
           </div>
           <div class="strat-sec">
             <div class="strat-badge badge-today">🟢 오늘 추천</div>
-            <div class="rich" id="tod-${r.id}" data-rid="${r.id}" data-fld="todH"
-              onmouseup="onSel(event)">${todH||'<span style="color:var(--text4);font-size:11px">—</span>'}</div>
+            <div class="rich" data-rid="${r.id}" data-fld="todH">${todH||'<span style="color:var(--text4);font-size:11px">—</span>'}</div>
           </div>
         </div>
       </td>
       <td><div class="td-memo-wrap">
-        <div class="rich" id="m2-${r.id}" data-rid="${r.id}" data-fld="m2H"
-          onmouseup="onSel(event)">${m2H||'<span style="color:var(--text4);font-size:11px">—</span>'}</div>
+        <div class="rich" data-rid="${r.id}" data-fld="m2H">${m2H||'<span style="color:var(--text4);font-size:11px">—</span>'}</div>
       </div></td>
-      <td>
-        <div class="act-btns">
-          <button class="ic-btn edit" title="수정" onclick="openEdit('${r.id}')">✏️</button>
-          <button class="ic-btn del"  title="삭제" onclick="quickDelete('${r.id}')">🗑</button>
-        </div>
-      </td>
+      <td><div class="act-btns">
+        <button class="ic-btn edit" title="수정" onclick="openEdit('${r.id}')">✏️</button>
+        <button class="ic-btn del"  title="삭제" onclick="quickDelete('${r.id}')">🗑</button>
+      </div></td>
     </tr>`;
   });
 
-  const tr = init ? cum/init*100 : 0;
-  html += `
-    <tr class="row-total">
-      <td colspan="2"><div class="td-p" style="color:var(--text3);font-size:10.5px;font-family:var(--sans)">누계</div></td>
-      <td><div class="td-p td-num ${cc(cum)}">${(cum>=0?'+':'')+fmt(cum)}</div></td>
-      <td><div class="td-p td-num ${cc(tr)}">${fmtR(tr)}</div></td>
-      <td colspan="3"></td>
-    </tr>`;
+  const tr=init?cum/init*100:0;
+  html+=`<tr class="row-total">
+    <td colspan="2"><div class="td-p" style="color:var(--text3);font-size:10.5px;font-family:var(--sans)">누계</div></td>
+    <td><div class="td-p td-num ${cc(cum)}">${(cum>=0?'+':'')+fmt(cum)}</div></td>
+    <td><div class="td-p td-num ${cc(tr)}">${fmtR(tr)}</div></td>
+    <td colspan="3"></td></tr>`;
 
-  tb.innerHTML = html;
-  const last = rows[rows.length-1];
-  upd(init, last.pr + last.pnl, cum);
+  tb.innerHTML=html;
+  const last=rows[rows.length-1];
+  upd(init,last.pr+last.pnl,cum);
 }
 
-function upd(init, cur, cum) {
-  const rate = init ? cum/init*100 : 0;
-  document.getElementById('s-init').textContent = init ? fmt(init)+'원' : '—';
-  document.getElementById('s-cur').textContent  = cur  ? fmt(cur) +'원' : '—';
-  const pe = document.getElementById('s-pnl');
-  pe.textContent = cum ? (cum>=0?'+':'')+fmt(cum)+'원' : '—'; pe.className='si-val '+cc(cum);
-  const re = document.getElementById('s-rate');
-  re.textContent = rate ? fmtR(rate) : '—'; re.className='si-val '+cc(rate);
-  document.getElementById('s-days').textContent = rows.length+'일';
-  document.getElementById('s-tgt').textContent  = init ? fmt(init*2)+'원' : '—';
-  const prog = init && cur>init ? Math.min((cur-init)/init*100,100) : 0;
-  document.getElementById('pbar').style.width   = Math.max(prog,0)+'%';
-  document.getElementById('ppct').textContent   = Math.max(prog,0).toFixed(1)+'%';
-  document.getElementById('ptxt').textContent   = init&&cur ? '목표까지 '+fmt(Math.max(init*2-cur,0))+'원 남음' : '';
+function upd(init,cur,cum){
+  const rate=init?cum/init*100:0;
+  document.getElementById('s-init').textContent=init?fmt(init)+'원':'—';
+  document.getElementById('s-cur').textContent =cur ?fmt(cur) +'원':'—';
+  const pe=document.getElementById('s-pnl');
+  pe.textContent=cum?(cum>=0?'+':'')+fmt(cum)+'원':'—'; pe.className='si-val '+cc(cum);
+  const re=document.getElementById('s-rate');
+  re.textContent=rate?fmtR(rate):'—'; re.className='si-val '+cc(rate);
+  document.getElementById('s-days').textContent=rows.length+'일';
+  document.getElementById('s-tgt').textContent =init?fmt(init*2)+'원':'—';
+  const prog=init&&cur>init?Math.min((cur-init)/init*100,100):0;
+  document.getElementById('pbar').style.width  =Math.max(prog,0)+'%';
+  document.getElementById('ppct').textContent  =Math.max(prog,0).toFixed(1)+'%';
+  document.getElementById('ptxt').textContent  =init&&cur?'목표까지 '+fmt(Math.max(init*2-cur,0))+'원 남음':'';
 }
 
-/* Quick delete from table row (without opening modal) */
-async function quickDelete(id) {
-  const row = rows.find(r => r.id === id);
-  const label = row ? row.date : id;
-  if (!confirm(`[${label}] 기록을 삭제할까요?\nGoogle Sheets에서도 삭제됩니다.`)) return;
-  try { await apiDelete(id); }
-  catch(e) { alert('삭제 실패: '+e.message); }
-}
-
-/* ══════════════════════════════════════════
+/* ══════════════════════════════
    FORMAT TOOLBAR
-══════════════════════════════════════════ */
-let _richEl=null, _richRid=null, _richFld=null;
+   — 테이블 .rich 셀 AND 모달 CE 필드 모두 지원
+══════════════════════════════ */
+let _sel=null;          // saved Selection (for table cells)
+let _ceTarget=null;     // CE target el (modal fields OR table rich cells)
+let _richRow=null;      // row data for table .rich cells
+let _richFld=null;      // field name for table .rich cells
 
-function onSel(e) {
-  const sel = window.getSelection();
-  if (!sel || sel.isCollapsed || !sel.toString().trim()) { hideFtb(); return; }
-  _richEl  = e.currentTarget;
-  _richRid = _richEl.dataset.rid;
-  _richFld = _richEl.dataset.fld;
-  showFtb(e.clientX, e.clientY);
-}
-function showFtb(x,y) {
-  const fb = document.getElementById('ftb'); fb.classList.add('show');
-  const bw=340, bh=52;
-  let l = Math.min(x, window.innerWidth-bw-8);
-  let t = y-bh-12; if(t<8) t=y+14;
-  fb.style.left = Math.max(8,l)+'px'; fb.style.top = Math.max(8,t)+'px';
-}
-function hideFtb() {
-  document.getElementById('ftb').classList.remove('show');
-  _richEl=_richRid=_richFld=null;
+function isInModal(el){
+  return document.getElementById('modal').contains(el);
 }
 
-function applyFmt(type, val) {
-  if (!_richEl) return;
-  const sel = window.getSelection();
-  if (!sel || sel.isCollapsed) { hideFtb(); return; }
-  try {
-    const range = sel.getRangeAt(0);
-    if (!_richEl.contains(range.commonAncestorContainer)) { hideFtb(); return; }
-    document.execCommand('styleWithCSS', false, true);
-    if      (type==='color') document.execCommand('foreColor', false, val);
-    else if (type==='bold')  document.execCommand('bold', false, null);
-    else if (type==='reset') document.execCommand('removeFormat', false, null);
+/* mouseup: detect drag selection anywhere */
+document.addEventListener('mouseup', e=>{
+  // small delay so selection is settled
+  setTimeout(()=>{
+    const sel=window.getSelection();
+    if(!sel||sel.isCollapsed||!sel.toString().trim()) return;
 
-    // Save to in-memory + debounced push to Sheets
-    const row = rows.find(r => r.id === _richRid);
-    if (row) {
-      row[_richFld] = _richEl.innerHTML;
-      clearTimeout(_richEl._t);
-      _richEl._t = setTimeout(() =>
-        apiUpdate(row).catch(err => console.warn('서식 저장 실패:', err)), 900);
+    const range=sel.getRangeAt(0);
+    const ancestor=range.commonAncestorContainer.nodeType===3
+      ?range.commonAncestorContainer.parentElement
+      :range.commonAncestorContainer;
+
+    // Check if inside a .rich cell (table)
+    const richEl=ancestor.closest('.rich');
+    // Check if inside a modal CE field
+    const ceEl=ancestor.closest('[contenteditable="true"]');
+
+    if(richEl){
+      _ceTarget=richEl;
+      const rid=richEl.dataset.rid;
+      _richFld=richEl.dataset.fld;
+      _richRow=rows.find(r=>r.id===rid)||null;
+      _sel=sel;
+      showFtb(e.clientX, e.clientY);
+    } else if(ceEl && isInModal(ceEl)){
+      _ceTarget=ceEl;
+      _richRow=null; _richFld=null;
+      _sel=sel;
+      showFtb(e.clientX, e.clientY);
     }
-  } catch(err) {}
-  sel.removeAllRanges();
+  },10);
+});
+
+/* hide toolbar when clicking elsewhere */
+document.addEventListener('mousedown', e=>{
+  const ftb=document.getElementById('ftb');
+  if(ftb&&ftb.contains(e.target)) return; // clicking toolbar itself → keep
+  // hide if clicking outside toolbar
+  const sel=window.getSelection();
+  if(!sel||sel.isCollapsed) hideFtb();
+});
+
+function showFtb(x,y){
+  const fb=document.getElementById('ftb'); fb.classList.add('show');
+  const bw=340,bh=52;
+  let l=Math.min(x,window.innerWidth-bw-8);
+  let t=y-bh-14; if(t<8) t=y+16;
+  fb.style.left=Math.max(8,l)+'px'; fb.style.top=Math.max(8,t)+'px';
+}
+function hideFtb(){
+  document.getElementById('ftb').classList.remove('show');
+  _ceTarget=null; _richRow=null; _richFld=null; _sel=null;
+}
+
+function restoreAndExec(cmd, val){
+  if(!_ceTarget) return;
+  // For table .rich cells: make temporarily editable
+  let wasEditable=false;
+  if(!_ceTarget.isContentEditable){
+    _ceTarget.contentEditable='true';
+    wasEditable=false;
+  } else { wasEditable=true; }
+
+  // Restore selection
+  if(_sel){
+    const s=window.getSelection();
+    s.removeAllRanges();
+    try{ s.addRange(_sel.getRangeAt(0).cloneRange()); }catch(err){}
+  }
+
+  document.execCommand('styleWithCSS',false,true);
+  document.execCommand(cmd,false,val||null);
+
+  // Save updated HTML
+  if(_richRow && _richFld){
+    // table cell
+    _richRow[_richFld]=_ceTarget.innerHTML;
+    clearTimeout(_ceTarget._t);
+    _ceTarget._t=setTimeout(()=>
+      apiUpdate(_richRow).catch(err=>console.warn('서식저장실패:',err)),800);
+    if(!wasEditable) setTimeout(()=>{ _ceTarget.contentEditable='false'; },100);
+  }
+  // For modal CE fields, HTML is collected on save — nothing extra needed
+
+  window.getSelection().removeAllRanges();
   hideFtb();
 }
 
-// Enable contentEditable on .rich cells for text selection
-function getRichEl(t) { return t.closest('.rich'); }
-document.addEventListener('mousedown', e => {
-  const el = getRichEl(e.target);
-  const ftb = document.getElementById('ftb');
-  if (el) {
-    el.contentEditable = 'true';
-  } else if (!ftb || !ftb.contains(e.target)) {
-    document.querySelectorAll('.rich[contenteditable=true]').forEach(el => {
-      el.contentEditable = 'false';
-    });
-    hideFtb();
-  }
-});
+function applyColor(c){ restoreAndExec('foreColor',c); }
+function applyBold(e){ e.preventDefault(); restoreAndExec('bold'); }
+function applyReset(e){ e.preventDefault(); restoreAndExec('removeFormat'); }
 </script>
 </body>
 </html>
