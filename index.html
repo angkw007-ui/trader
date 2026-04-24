@@ -283,12 +283,6 @@ td:last-child{border-right:none;}
 <!-- ROUND TABS -->
 <div class="round-bar" id="round-bar"></div>
 
-<!-- OVERVIEW (5 rounds at a glance) -->
-<div class="overview">
-  <div class="ov-title">전체 진행률</div>
-  <div class="ov-rounds" id="ov-rounds"></div>
-</div>
-
 <!-- SUMMARY for current round -->
 <div class="sum-bar">
   <div class="si"><div class="si-lbl">시작 원금</div><div class="si-val neu" id="s-init">—</div></div>
@@ -441,7 +435,7 @@ td:last-child{border-right:none;}
 /* ══════════════════════════════
    CONFIG & STATE
 ══════════════════════════════ */
-const SCRIPT_URL='https://script.google.com/macros/s/AKfycbzRzu6DK26HCEOro7Ekg69TTMbuwXfuOo3gEuzfor-MNRhQAy3vZ6LoXhSm1Yn2blyI7A/exec';
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxhwJh8oDla9h2MqVdLGmvSLEMCgppy0XvhhI84VNLWXbrzM-Gjrwd0s0k7cn1ewxe87g/exec';
 const TOTAL_ROUNDS=5;
 const ROUND_COLORS=['#e67700','#1971c2','#2f9e44','#6741d9','#e03131'];
 const ROUND_NAMES=['1회차','2회차','3회차','4회차','5회차'];
@@ -561,13 +555,17 @@ function rowsOf(r){ return allRows.filter(x=>x.round===r); }
 
 // compute start principal of round r:
 // round 1 = first row's pr, round n = last row of round n-1: pr+pnl
+// ★ 초기 원금 고정값 (1회차 시작 기준)
+const INITIAL_PRINCIPAL = 1000000;
+
 function roundStartPr(r){
-  if(r===1){
-    const rows=rowsOf(1);
-    return rows.length>0?rows[0].pr:0;
-  }
+  if(r===1) return INITIAL_PRINCIPAL;
+  // r회차 시작 = r-1회차 마지막 행의 pr+pnl
   const prev=rowsOf(r-1);
-  if(prev.length===0) return roundStartPr(r-1)*2||0; // fallback
+  if(prev.length===0){
+    // r-1회차 데이터 없으면 재귀적으로 계산
+    return roundStartPr(r-1)*2;
+  }
   const last=prev[prev.length-1];
   return (last.pr||0)+(last.pnl||0);
 }
@@ -756,11 +754,8 @@ function renderEmpty(msg){
 }
 
 function render(){
-  // ── overview cards ──
-  renderOverview();
-
-  // ── current round rows ──
-  const rows=rowsOf(curRound);
+  // ── current round rows (날짜 오름차순: 오래된 것이 위) ──
+  const rows=rowsOf(curRound).slice().sort((a,b)=>a.date.localeCompare(b.date));
   const tb=document.getElementById('tbody');
   document.getElementById('row-count').textContent=rows.length;
   document.getElementById('round-label-small').textContent=ROUND_NAMES[curRound-1]+' · ';
@@ -768,7 +763,7 @@ function render(){
   if(!rows.length){ renderEmpty(); updateSummary(0,0,0); return; }
 
   let cum=0;
-  const init=rows[0].pr;
+  const init=roundStartPr(curRound); // 항상 회차 시작 원금 기준
   let html='';
   rows.forEach(r=>{
     cum+=r.pnl;
@@ -813,57 +808,29 @@ function render(){
   tb.innerHTML=html;
 
   const last=rows[rows.length-1];
-  updateSummary(init, last.pr+last.pnl, cum);
-}
-
-function renderOverview(){
-  const container=document.getElementById('ov-rounds');
-  // compute base for 5회 final target from round 1 start
-  const base=roundStartPr(1)||0;
-  const finalTarget=base*Math.pow(2,TOTAL_ROUNDS);
-
-  let html='';
-  for(let r=1;r<=TOTAL_ROUNDS;r++){
-    const rows=rowsOf(r);
-    const startPr=roundStartPr(r);
-    const target=startPr*2;
-    let cur=startPr;
-    if(rows.length>0){
-      const last=rows[rows.length-1];
-      cur=(last.pr||0)+(last.pnl||0);
-    }
-    const pct=startPr?Math.min(cur/target*100,100):0;
-    const done=cur>=target&&target>0;
-    const isCur=r===curRound;
-    html+=`<div class="ov-round${done?' done':''}${isCur?' current':''}" onclick="switchRound(${r})" style="cursor:pointer">
-      <div class="ov-r-label${done?' done':''}">${ROUND_NAMES[r-1]}${done?' ✓':isCur?' 진행중':''}${r===TOTAL_ROUNDS&&done?` → ${fmt(finalTarget)}원`:''}
-      </div>
-      <div class="ov-r-range">${startPr?fmt(startPr)+'→'+fmt(target):'미시작'}</div>
-      <div class="ov-r-pct" style="color:${done?'var(--green)':ROUND_COLORS[r-1]}">${pct.toFixed(1)}%</div>
-      <div class="ov-bar" style="width:${pct}%;background:${ROUND_COLORS[r-1]}"></div>
-    </div>`;
-  }
-  container.innerHTML=html;
+  const curPr=(last.pr||0)+(last.pnl||0);
+  updateSummary(init, curPr, cum);
 }
 
 function updateSummary(init,cur,cum){
-  const rate=init?cum/init*100:0;
-  document.getElementById('s-init').textContent=init?fmt(init)+'원':'—';
-  document.getElementById('s-cur').textContent =cur ?fmt(cur) +'원':'—';
+  // init은 항상 해당 회차의 시작 원금
+  const startPr = roundStartPr(curRound);
+  const rate = startPr ? cum/startPr*100 : 0;
+  document.getElementById('s-init').textContent = fmt(startPr)+'원';
+  document.getElementById('s-cur').textContent  = cur ? fmt(cur)+'원' : fmt(startPr)+'원';
   const pe=document.getElementById('s-pnl');
   pe.textContent=cum?(cum>=0?'+':'')+fmt(cum)+'원':'—'; pe.className='si-val '+cc(cum);
   const re=document.getElementById('s-rate');
   re.textContent=rate?fmtR(rate):'—'; re.className='si-val '+cc(rate);
   document.getElementById('s-days').textContent=rowsOf(curRound).length+'일';
 
-  const target=init*2;
-  document.getElementById('s-tgt').textContent=init?fmt(target)+'원':'—';
+  const target=startPr*2;
+  document.getElementById('s-tgt').textContent=fmt(target)+'원';
 
-  // 5회 최종 목표
-  const base=roundStartPr(1)||0;
-  document.getElementById('s-final').textContent=base?fmt(base*Math.pow(2,TOTAL_ROUNDS))+'원':'—';
+  // 5회 최종 목표: 항상 INITIAL_PRINCIPAL × 2^5
+  document.getElementById('s-final').textContent=fmt(INITIAL_PRINCIPAL*Math.pow(2,TOTAL_ROUNDS))+'원';
 
-  const prog=init&&cur>init?Math.min((cur-init)/init*100,100):0;
+  const prog=cur>startPr?Math.min((cur-startPr)/startPr*100,100):0;
   document.getElementById('pbar').style.width=Math.max(prog,0)+'%';
   document.getElementById('ppct').textContent=Math.max(prog,0).toFixed(1)+'%';
 
@@ -871,7 +838,7 @@ function updateSummary(init,cur,cum){
   document.getElementById('prog-lbl').textContent=ROUND_NAMES[curRound-1]+' 달성률';
   document.getElementById('ptxt').textContent=
     done?`🎉 ${ROUND_NAMES[curRound-1]} 목표 달성!`:
-    (init&&cur?`목표까지 ${fmt(Math.max(target-cur,0))}원 남음`:'');
+    (cur?`목표까지 ${fmt(Math.max(target-cur,0))}원 남음`:'');
 }
 
 /* ══════════════════════════════
